@@ -95,7 +95,7 @@ function smtp_send(string $to, string $subject, string $body, ?string $toName = 
         /* dot-stuffing */
         $payload = preg_replace('/^\./m', '..', $payload);
         fwrite($fp, $payload . "\r\n.\r\n");
-        smtp_read($fp);
+        /* server replies "250 OK" exactly once — read it once */
         smtp_expect($fp, '', ['250']);
 
         fwrite($fp, "QUIT\r\n");
