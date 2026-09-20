@@ -454,10 +454,28 @@ async function api(path, method, body){
 
 async function init(){
   try{
-    const d = await api('me.php');
+    const r = await fetch('api/me.php');
+    const txt = await r.text();
+    let d;
+    try{ d = JSON.parse(txt); }
+    catch(e){
+      st.available = false;
+      st.errDetail = 'The server answered HTTP ' + r.status + ' but not with JSON. '
+        + (txt.trim().startsWith('<?php')
+           ? 'PHP is NOT executing — the file source was served instead. Ask your hoster to enable PHP for this folder.'
+           : 'First bytes: ' + txt.slice(0,150).replace(/</g,'‹'));
+      return;
+    }
+    if(d.error === 'not_installed'){ st.available=false; st.errDetail='The API says: not installed — finish install.php (it writes config.php).'; return; }
     st.available = true; st.csrf = d.csrf||''; st.user = d.user||null;
     if(st.user) syncAll(false);           /* silent max-merge on page load */
-  }catch(e){ st.available = false; }
+  }catch(e){
+    st.available = false;
+    st.errDetail = 'Could not reach api/me.php (' + (e.message||e) + '). Check that all files (including the api/ and lib/ folders) were uploaded and that PHP runs in this folder.';
+  }finally{
+    st.checked = true;
+    route();   /* re-evaluate: landing page vs hub vs offline */
+  }
 }
 
 /* ---------- sync (SRS 3.9: push debounced, server max-merges) ---------- */
