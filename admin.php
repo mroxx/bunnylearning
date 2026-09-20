@@ -157,7 +157,8 @@ async function detail(id){
     <p class="small">Joined: ${esc(u.created_at)} · Last login: ${esc(u.last_login_at||'—')}<br>
     Email: ${u.email ? esc(u.email)+(u.email_verified_at?' (verified ✓)':' (unverified)') : '—'}${u.email_pending ? ' · pending: '+esc(u.email_pending) : ''}
     ${u.must_change_password==1 ? '<br>⚠️ Must change password at next login' : ''}</p>
-    <p class="small">Progress: ${(d.progress||[]).map(p=>p.app+': '+p.coins+' coins').join(' · ')||'none yet'}</p>
+    <h4 style="margin:14px 0 4px">📊 Learning progress</h4>
+    ${progressHtml(d.progress)}
     <div class="row">
       <input id="nu" value="${esc(u.username)}" title="new username">
       <button onclick="patchUser('${u.id}')">Rename</button>

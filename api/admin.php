@@ -59,9 +59,19 @@ switch ($action) {
         $st->execute([$id]);
         $usr = $st->fetch();
         if (!$usr) jerr('User not found.', 404, 'not_found');
-        $st = db()->prepare('SELECT app, coins, updated_at FROM progress WHERE user_id = ?');
+        $st = db()->prepare('SELECT app, coins, stars, done, updated_at FROM progress WHERE user_id = ?');
         $st->execute([$id]);
-        jsend(['ok' => true, 'user' => $usr, 'progress' => $st->fetchAll()]);
+        $prog = [];
+        foreach ($st->fetchAll() as $row) {
+            $prog[] = [
+                'app'        => $row['app'],
+                'coins'      => (int)$row['coins'],
+                'stars'      => json_decode($row['stars'] ?: '{}', true),
+                'done'       => json_decode($row['done'] ?: '{}', true),
+                'updated_at' => $row['updated_at'],
+            ];
+        }
+        jsend(['ok' => true, 'user' => $usr, 'progress' => $prog]);
     }
 
     /* ---------- patch role / username ---------- */
