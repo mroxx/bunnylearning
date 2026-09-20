@@ -525,7 +525,7 @@ async function mergeDialog(){
           Object.keys(d.progress.stars||{}).length || Object.keys(d.progress.done||{}).length)) hasCloud = true;
     }catch(e){}
   }
-  if(!hasCloud){ await syncAll(false); showMe(); return; }
+  if(!hasCloud){ await syncAll(false); enterApp(); return; }
   const m = document.createElement('div');
   m.className = 'mgmodal';
   m.innerHTML = `<div class="authbox">
