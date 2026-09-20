@@ -3,26 +3,34 @@
 declare(strict_types=1);
 require_once __DIR__ . '/lib/bootstrap.php';
 
-$ok = false; $msg = '';
+$ok = false; $msg = ''; $title = '😕 Oops…';
 $t = (string)($_GET['t'] ?? '');
-if ($t !== '') {
-    $st = db()->prepare("SELECT tk.*, u.email_pending FROM tokens tk
+
+if ($t === '') {
+    $msg = 'Missing token — the link seems to be cut off. Try copying the complete link from the email into the browser address bar.';
+} else {
+    /* look up the token WITHOUT the expiry/used filters first, so we can say WHY it failed */
+    $st = db()->prepare("SELECT tk.*, u.email_pending, u.email FROM tokens tk
                          JOIN users u ON u.id = tk.user_id
-                         WHERE tk.token_hash = ? AND tk.purpose = 'verify_email'
-                           AND tk.used_at IS NULL AND tk.expires_at > NOW()");
+                         WHERE tk.token_hash = ? AND tk.purpose = 'verify_email'");
     $st->execute([hash('sha256', $t)]);
     $r = $st->fetch();
-    if ($r && !empty($r['email_pending'])) {
+
+    if (!$r) {
+        $msg = 'This token was not found in the database. Most likely the link was wrapped or truncated by your mail program — copy the full link manually into the address bar (it ends with 64 letters/digits).';
+    } elseif (!empty($r['used_at'])) {
+        $msg = 'This link was already used. If your email is still not verified, request a new link in the app (Me tab).';
+    } elseif (strtotime($r['expires_at']) < time()) {
+        $msg = 'This link has expired (valid 24 h). Please request a new one in the app (Me tab).';
+    } elseif (empty($r['email_pending'])) {
+        $msg = 'There is no pending email address on this account anymore (it was either already confirmed or removed). Log in and check the Me tab — if the email shows as verified, everything is fine.';
+    } else {
         db()->prepare('UPDATE users SET email = ?, email_verified_at = NOW(), email_pending = NULL WHERE id = ?')
           ->execute([$r['email_pending'], $r['user_id']]);
         db()->prepare('UPDATE tokens SET used_at = NOW() WHERE id = ?')->execute([$r['id']]);
         audit($r['user_id'], 'email_verified', $r['user_id']);
         $ok = true;
-    } else {
-        $msg = 'This verification link is invalid or has expired. Please request a new one in the app (Me tab).';
     }
-} else {
-    $msg = 'Missing token.';
 }
 ?>
 <!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -33,7 +41,7 @@ if ($t !== '') {
  .card{background:#fff;border:3px solid #2b2b2b;border-radius:20px;box-shadow:6px 6px 0 #2b2b2b;padding:32px;max-width:420px;text-align:center}
  a{color:#2563eb}
 </style></head><body><div class="card">
-<h1><?= $ok ? '🎉 Email confirmed!' : '😕 Oops…' ?></h1>
+<h1><?= $ok ? '🎉 Email confirmed!' : $title ?></h1>
 <p><?= $ok ? 'Your email address is now verified. You can close this page and go back to the app.' : htmlspecialchars($msg) ?></p>
 <p><a href="index.html">Back to Bunny Learning</a></p>
 </div></body></html>
