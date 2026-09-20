@@ -1,0 +1,1823 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#5BA9F0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="description" content="Bunny Learning — playful Chinese and Spanish practice for kids." />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<link rel="icon" type="image/png" href="icon-192.png" />
+<title>Bunny Learning · Chinese &amp; Spanish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+
+  :root{
+    --ink:#3B3024; --ink-soft:#7A6A58;
+    --sky:#CFEAFF; --cream:#FFF7E8; --paper:#FFFFFF;
+    --coral:#FF7A6B; --coral-d:#E85B4C;
+    --sun:#FFC43C; --sun-d:#E9A700;
+    --mint:#46C9A0; --mint-d:#2FA784;
+    --blue:#5BA9F0; --blue-d:#3C87CE;
+    --grape:#A87BE6; --grape-d:#8A5FCB;
+    --pink:#FF9ECF;
+    --good:#46C9A0; --bad:#FF7A6B;
+    --line:#F0E3CC;
+    --shadow:0 14px 0 rgba(0,0,0,.07), 0 22px 40px -18px rgba(60,40,20,.4);
+    --display:'Fredoka',system-ui,sans-serif;
+    --body:'Nunito',system-ui,sans-serif;
+    --zh:'Nunito','PingFang TC','PingFang HK','Microsoft JhengHei','Noto Sans TC','Noto Sans CJK TC',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:var(--body);color:var(--ink);
+    background:
+      radial-gradient(120% 60% at 50% -10%, var(--sky), transparent 60%),
+      linear-gradient(180deg,#EAF6FF, #FFF7E8 55%);
+    background-attachment:fixed;min-height:100svh;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .clouds{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .cloud{position:absolute;width:120px;height:40px;background:#fff;border-radius:40px;opacity:.55;
+    box-shadow:30px -14px 0 -2px #fff, -28px -8px 0 -6px #fff;animation:drift 40s linear infinite}
+  .cloud.c1{top:8%}
+  .cloud.c2{top:24%;left:-160px;transform:scale(.8);animation-duration:55s}
+  .cloud.c3{top:44%;left:-200px;transform:scale(1.15);opacity:.4;animation-duration:70s}
+  @keyframes drift{from{transform:translateX(-180px)}to{transform:translateX(115vw)}}
+
+  .app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:18px 16px calc(110px + env(safe-area-inset-bottom));min-height:100svh}
+  .screen{display:none;animation:pop .35s cubic-bezier(.2,.9,.3,1.2) both}
+  .screen.on{display:block}
+  @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}}
+
+  .bun{width:84px;height:84px;flex:none}
+  .bun.sm{width:54px;height:54px}
+
+  /* header / brand */
+  .top{display:flex;align-items:center;gap:12px;margin:6px 2px 18px}
+  .wm{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.4px;line-height:1}
+  .wm small{display:block;font-family:var(--body);font-weight:800;font-size:12.5px;color:var(--ink-soft);letter-spacing:.3px}
+  .coins{margin-left:auto;background:#fff;border:3px solid var(--sun);border-radius:999px;padding:6px 14px 6px 10px;
+    font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:6px;box-shadow:0 6px 0 rgba(233,167,0,.25)}
+
+  .bubble{background:#fff;border:3px solid var(--line);border-radius:22px;padding:14px 16px;position:relative;font-weight:800;font-size:16px;box-shadow:var(--shadow)}
+  .hello{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+
+  /* chapter cards */
+  .grid{display:grid;gap:16px}
+  .chap{border:none;cursor:pointer;text-align:left;color:#fff;border-radius:26px;padding:20px 18px;font-family:var(--body);
+    position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform .12s;width:100%}
+  .chap:active{transform:translateY(3px)}
+  .chap .badge{font-family:var(--display);font-weight:700;font-size:13px;background:rgba(255,255,255,.28);padding:4px 12px;border-radius:999px;display:inline-block}
+  .chap h2{font-family:var(--display);font-weight:700;font-size:24px;margin:10px 0 4px}
+  .chap h2 .zh{font-family:var(--zh);opacity:.85;font-size:16px;font-weight:600;margin-left:8px}
+  .chap p{margin:0;font-weight:800;opacity:.95;font-size:14px}
+  .chap .em{position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.9;transform:rotate(-8deg)}
+  .chap .stars{margin-top:12px;font-size:15px;font-weight:900;letter-spacing:1px}
+  .ch1{background:linear-gradient(135deg,var(--coral),var(--sun))}
+  .ch2{background:linear-gradient(135deg,var(--mint),#7BD46B)}
+  .ch3{background:linear-gradient(135deg,var(--blue),var(--grape))}
+
+  /* lesson list */
+  .bar{display:flex;align-items:center;gap:12px;margin:2px 2px 18px}
+  .back{width:46px;height:46px;border-radius:16px;border:3px solid var(--line);background:#fff;cursor:pointer;
+    font-size:20px;display:grid;place-items:center;box-shadow:0 5px 0 rgba(0,0,0,.06);flex:none}
+  .back:active{transform:translateY(2px)}
+  .htitle{font-family:var(--display);font-weight:700;font-size:24px}
+  .htitle .zh{font-family:var(--zh);font-size:15px;color:var(--ink-soft);font-weight:800;margin-left:6px}
+  .levels{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .lvl{border:3px solid var(--line);background:#fff;border-radius:22px;padding:16px 14px;cursor:pointer;text-align:left;
+    font-family:var(--body);box-shadow:0 8px 0 rgba(0,0,0,.05);transition:transform .12s}
+  .lvl:active{transform:translateY(3px)}
+  .lvl .ic{font-size:30px;line-height:1}
+  .lvl .nm{font-weight:900;font-size:15px;margin-top:8px;color:var(--ink)}
+  .lvl .ds{font-weight:700;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .lvl .ss{margin-top:6px;font-size:13px;color:var(--sun-d);font-weight:900;letter-spacing:1px}
+  .lvl .ss .off{color:#E7DCC6}
+
+  /* quiz */
+  .prog{height:16px;background:#fff;border:3px solid var(--line);border-radius:999px;overflow:hidden;margin:2px 0 16px}
+  .prog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sun),var(--coral));transition:width .3s;border-radius:999px}
+  .qcard{background:#fff;border:3px solid var(--line);border-radius:26px;padding:18px;box-shadow:var(--shadow)}
+  .qask{font-family:var(--display);font-weight:700;font-size:21px;text-align:center;line-height:1.35;margin:4px 2px 14px}
+  .qask .zh{font-family:var(--zh);font-weight:600}
+  .qask .py{display:block;font-family:var(--body);font-size:14px;color:var(--blue-d);font-weight:800;margin-top:4px}
+  .qask .blank{color:var(--coral);border-bottom:4px dotted var(--coral);padding:0 14px}
+  .spk{margin:2px auto 12px;display:flex;align-items:center;gap:8px;background:#FFF3D6;border:3px solid var(--sun);
+    color:var(--sun-d);font-weight:900;border-radius:999px;padding:8px 16px;cursor:pointer;font-family:var(--body);font-size:14px}
+  .spk:active{transform:translateY(2px)}
+  .opts{display:grid;gap:12px}
+  .opts.two{grid-template-columns:1fr 1fr}
+  .opt{border:3px solid var(--line);background:#fff;border-radius:18px;padding:15px 14px;cursor:pointer;font-family:var(--body);
+    font-weight:900;font-size:17px;color:var(--ink);box-shadow:0 6px 0 rgba(0,0,0,.05);transition:transform .1s;text-align:center;width:100%}
+  .opt .py{display:block;font-size:12.5px;color:var(--blue-d);font-weight:800;margin-top:3px}
+  .opt.zhopt{font-family:var(--zh);font-weight:700;font-size:21px}
+  .opt:active{transform:translateY(2px)}
+  .opt.right{border-color:var(--good);background:#E7FBF3;color:var(--mint-d);box-shadow:0 6px 0 rgba(47,167,132,.25)}
+  .opt.wrong{border-color:var(--bad);background:#FFECE9;color:var(--coral-d);box-shadow:0 6px 0 rgba(232,91,76,.2)}
+  .opt[disabled]{cursor:default}
+  .next{margin-top:16px;width:100%;border:none;border-radius:18px;padding:16px;font-family:var(--display);font-weight:700;font-size:19px;
+    color:#fff;background:linear-gradient(135deg,var(--blue),var(--grape));cursor:pointer;box-shadow:0 8px 0 rgba(60,90,140,.3);transition:transform .1s}
+  .next:active{transform:translateY(3px)}
+  .feedrow{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:900;font-size:16px}
+  .feedrow.good{color:var(--mint-d)} .feedrow.bad{color:var(--coral-d)}
+
+  /* study panels */
+  .tip{background:#EEF7FF;border:3px solid var(--blue);border-radius:18px;padding:14px 16px;font-weight:800;line-height:1.5;font-size:15px;margin-bottom:14px}
+  .read{background:#FFFDF6;border:3px dashed var(--sun);border-radius:18px;padding:18px 16px;line-height:2;font-weight:700;font-size:20px;font-family:var(--zh)}
+  .read ruby rt{font-size:11px;color:var(--blue-d);font-family:var(--body);font-weight:700}
+  .read.nopy ruby rt{display:none}
+  .trans{background:#fff;border:3px solid var(--line);border-radius:16px;padding:12px 14px;font-weight:700;font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin-top:12px}
+  .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .chip{border:3px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.05);font-family:var(--body)}
+  .chip.on{background:linear-gradient(135deg,var(--blue),var(--grape));color:#fff;border-color:transparent}
+  .chip:active{transform:translateY(2px)}
+
+  .idiom{background:#fff;border:3px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 8px 0 rgba(0,0,0,.05);margin-bottom:14px}
+  .idiom .head{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .idiom .izh{font-family:var(--zh);font-weight:700;font-size:26px}
+  .idiom .ipy{font-weight:800;color:var(--blue-d);font-size:13.5px}
+  .idiom .ien{font-weight:800;color:var(--ink-soft);font-size:13.5px;margin-top:2px}
+  .idiom .plus{margin-left:auto;font-size:20px;color:var(--ink-soft);font-weight:900;width:34px;height:34px;border-radius:12px;border:3px solid var(--line);display:grid;place-items:center;flex:none}
+  .idiom .body{display:none;margin-top:12px;border-top:2px dashed var(--line);padding-top:12px}
+  .idiom.open .body{display:block;animation:pop .25s ease both}
+  .irow{margin-bottom:10px;font-size:14.5px;line-height:1.55;font-weight:700}
+  .irow .lab{display:inline-block;font-family:var(--display);font-weight:700;font-size:12px;color:#fff;background:var(--mint);border-radius:8px;padding:2px 8px;margin-right:6px}
+  .irow .lab.d{background:var(--blue)} .irow .lab.e{background:var(--sun)} .irow .lab.s{background:var(--grape)} .irow .lab.a{background:var(--coral)}
+  .irow .zh{font-family:var(--zh);font-weight:700}
+  .irow .sub{color:var(--ink-soft);font-size:13px;margin-top:2px}
+  .mini{margin-left:8px;border:2.5px solid var(--sun);background:#FFF3D6;color:var(--sun-d);border-radius:999px;padding:3px 10px;font-weight:900;font-size:12px;cursor:pointer;font-family:var(--body)}
+
+  /* results */
+  .result{text-align:center;background:#fff;border:3px solid var(--line);border-radius:28px;padding:26px 20px;box-shadow:var(--shadow)}
+  .result .bigstars{font-size:46px;letter-spacing:6px;margin:6px 0 2px}
+  .result h2{font-family:var(--display);font-weight:700;font-size:28px;margin:8px 0 2px}
+  .result .sc{font-weight:900;color:var(--ink-soft);font-size:16px;margin-bottom:18px}
+  .rbtns{display:grid;gap:12px}
+  .btn{border:none;border-radius:18px;padding:15px;font-family:var(--display);font-weight:700;font-size:18px;color:#fff;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.18);transition:transform .1s;width:100%}
+  .btn:active{transform:translateY(3px)}
+  .btn.go{background:linear-gradient(135deg,var(--mint),#7BD46B);box-shadow:0 8px 0 rgba(47,167,132,.3)}
+  .btn.play{background:linear-gradient(135deg,var(--blue),var(--grape));box-shadow:0 8px 0 rgba(60,90,140,.3)}
+  .btn.ghost{background:#fff;color:var(--ink-soft);border:3px solid var(--line);box-shadow:0 6px 0 rgba(0,0,0,.06)}
+
+  .confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .conf{position:absolute;top:-12px;width:11px;height:14px;border-radius:2px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:1}}
+
+  /* write tab */
+  .wcard{background:#fff;border:3px solid var(--line);border-radius:26px;padding:20px 18px;box-shadow:var(--shadow);text-align:center}
+  .wmean{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.3}
+  .wpy{font-weight:800;color:var(--blue-d);font-size:15px;margin-top:4px}
+  .winput{width:100%;font-family:var(--zh);font-weight:700;font-size:26px;text-align:center;color:var(--ink);background:#FFFDF8;border:3px solid var(--line);border-radius:15px;padding:12px 14px;margin-top:14px;letter-spacing:4px}
+  .winput:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(91,169,240,.18)}
+  .wdots{display:flex;justify-content:center;gap:7px;margin:14px 0 2px}
+  .wdots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+  .wdots i.on{background:var(--coral)}
+  .wfeed{margin-top:12px;font-weight:900;font-size:16px;min-height:24px}
+  .wfeed.good{color:var(--mint-d)} .wfeed.bad{color:var(--coral-d)}
+  .wans{margin-top:8px;font-family:var(--zh);font-weight:700;font-size:30px;letter-spacing:6px}
+  .wans .ok{color:var(--mint-d)} .wans .no{color:var(--coral-d);text-decoration:underline wavy var(--coral-d)}
+
+  /* bottom nav */
+  .nav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));z-index:40;
+    background:#fff;border:3px solid var(--line);border-radius:24px;padding:8px;display:flex;gap:6px;box-shadow:var(--shadow);width:min(420px,calc(100% - 28px))}
+  .navb{flex:1;border:none;background:transparent;border-radius:16px;padding:8px 4px;cursor:pointer;font-family:var(--body);font-weight:900;font-size:12.5px;color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;gap:3px}
+  .navb span{font-size:21px}
+  .navb.on{background:linear-gradient(135deg,var(--blue),var(--grape));color:#fff;box-shadow:0 5px 0 rgba(60,90,140,.25)}
+
+  .hint{text-align:center;color:var(--ink-soft);font-weight:800;font-size:13.5px;margin-top:18px}
+  .secttl{font-family:var(--display);font-weight:700;font-size:20px;margin:22px 2px 10px}
+  @media(max-width:380px){ .qask{font-size:19px} .idiom .izh{font-size:23px} }
+
+/* ============ Spanish-app extras ============ */
+
+  :root{
+    --ink:#3B3024; --ink-soft:#7A6A58;
+    --sky:#CFEAFF; --cream:#FFF7E8; --paper:#FFFFFF;
+    --coral:#FF7A6B; --coral-d:#E85B4C;
+    --sun:#FFC43C; --sun-d:#E9A700;
+    --mint:#46C9A0; --mint-d:#2FA784;
+    --blue:#5BA9F0; --blue-d:#3C87CE;
+    --grape:#A87BE6; --grape-d:#8A5FCB;
+    --pink:#FF9ECF;
+    --good:#46C9A0; --bad:#FF7A6B;
+    --line:#F0E3CC;
+    --shadow:0 14px 0 rgba(0,0,0,.07), 0 22px 40px -18px rgba(60,40,20,.4);
+    --display:'Fredoka',system-ui,sans-serif;
+    --body:'Nunito',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:var(--body);color:var(--ink);
+    background:
+      radial-gradient(120% 60% at 50% -10%, var(--sky), transparent 60%),
+      linear-gradient(180deg,#EAF6FF, #FFF7E8 55%);
+    background-attachment:fixed;min-height:100svh;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .clouds{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .cloud{position:absolute;width:120px;height:40px;background:#fff;border-radius:40px;opacity:.55;
+    box-shadow:30px -14px 0 -2px #fff, -28px -8px 0 -6px #fff;animation:drift 40s linear infinite}
+  .cloud.c1{top:8%}
+  .cloud.c2{top:24%;left:-160px;transform:scale(.8);animation-duration:55s}
+  .cloud.c3{top:44%;left:-200px;transform:scale(1.15);opacity:.4;animation-duration:70s}
+  @keyframes drift{from{transform:translateX(-180px)}to{transform:translateX(115vw)}}
+
+  .app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:18px 16px calc(110px + env(safe-area-inset-bottom));min-height:100svh}
+  .screen{display:none;animation:pop .35s cubic-bezier(.2,.9,.3,1.2) both}
+  .screen.on{display:block}
+  @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.99)}}
+
+  .bun{width:84px;height:84px;flex:none}
+  .bun.sm{width:54px;height:54px}
+
+  .top{display:flex;align-items:center;gap:12px;margin:6px 2px 18px}
+  .wm{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.4px;line-height:1}
+  .wm small{display:block;font-family:var(--body);font-weight:800;font-size:12.5px;color:var(--ink-soft);letter-spacing:.3px}
+  .coins{margin-left:auto;background:#fff;border:3px solid var(--sun);border-radius:999px;padding:6px 14px 6px 10px;
+    font-family:var(--display);font-weight:700;display:flex;align-items:center;gap:6px;box-shadow:0 6px 0 rgba(233,167,0,.25)}
+
+  .bubble{background:#fff;border:3px solid var(--line);border-radius:22px;padding:14px 16px;font-weight:800;font-size:16px;box-shadow:var(--shadow)}
+  .hello{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+
+  .grid{display:grid;gap:16px}
+  .chap{border:none;cursor:pointer;text-align:left;color:#fff;border-radius:26px;padding:20px 18px;font-family:var(--body);
+    position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform .12s;width:100%}
+  .chap:active{transform:translateY(3px)}
+  .chap .badge{font-family:var(--display);font-weight:700;font-size:13px;background:rgba(255,255,255,.28);padding:4px 12px;border-radius:999px;display:inline-block}
+  .chap h2{font-family:var(--display);font-weight:700;font-size:24px;margin:10px 0 4px}
+  .chap p{margin:0;font-weight:800;opacity:.95;font-size:14px}
+  .chap .em{position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.9;transform:rotate(-8deg)}
+  .chap .stars{margin-top:12px;font-size:15px;font-weight:900;letter-spacing:1px}
+  .s1{background:linear-gradient(135deg,var(--blue),var(--grape))}
+  .s2{background:linear-gradient(135deg,var(--mint),#7BD46B)}
+  .s3{background:linear-gradient(135deg,var(--coral),var(--sun))}
+
+  .bar{display:flex;align-items:center;gap:12px;margin:2px 2px 18px}
+  .back{width:46px;height:46px;border-radius:16px;border:3px solid var(--line);background:#fff;cursor:pointer;
+    font-size:20px;display:grid;place-items:center;box-shadow:0 5px 0 rgba(0,0,0,.06);flex:none}
+  .back:active{transform:translateY(2px)}
+  .htitle{font-family:var(--display);font-weight:700;font-size:24px}
+  .htitle .sub{font-size:14px;color:var(--ink-soft);font-weight:800;margin-left:6px}
+  .levels{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .lvl{border:3px solid var(--line);background:#fff;border-radius:22px;padding:16px 14px;cursor:pointer;text-align:left;
+    font-family:var(--body);box-shadow:0 8px 0 rgba(0,0,0,.05);transition:transform .12s}
+  .lvl:active{transform:translateY(3px)}
+  .lvl .ic{font-size:30px;line-height:1}
+  .lvl .nm{font-weight:900;font-size:15px;margin-top:8px;color:var(--ink)}
+  .lvl .ds{font-weight:700;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .lvl .ss{margin-top:6px;font-size:13px;color:var(--sun-d);font-weight:900;letter-spacing:1px}
+  .lvl .ss .off{color:#E7DCC6}
+
+  .prog{height:16px;background:#fff;border:3px solid var(--line);border-radius:999px;overflow:hidden;margin:2px 0 16px}
+  .prog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sun),var(--coral));transition:width .3s;border-radius:999px}
+  .qcard{background:#fff;border:3px solid var(--line);border-radius:26px;padding:18px;box-shadow:var(--shadow)}
+  .qask{font-family:var(--display);font-weight:700;font-size:21px;text-align:center;line-height:1.35;margin:4px 2px 14px}
+  .qask .es{font-weight:700}
+  .spk{margin:2px auto 12px;display:flex;align-items:center;gap:8px;background:#FFF3D6;border:3px solid var(--sun);
+    color:var(--sun-d);font-weight:900;border-radius:999px;padding:8px 16px;cursor:pointer;font-family:var(--body);font-size:14px}
+  .spk:active{transform:translateY(2px)}
+  .opts{display:grid;gap:12px}
+  .opts.two{grid-template-columns:1fr 1fr}
+  .opt{border:3px solid var(--line);background:#fff;border-radius:18px;padding:15px 14px;cursor:pointer;font-family:var(--body);
+    font-weight:900;font-size:17px;color:var(--ink);box-shadow:0 6px 0 rgba(0,0,0,.05);transition:transform .1s;text-align:center;width:100%}
+  .opt:active{transform:translateY(2px)}
+  .opt.right{border-color:var(--good);background:#E7FBF3;color:var(--mint-d);box-shadow:0 6px 0 rgba(47,167,132,.25)}
+  .opt.wrong{border-color:var(--bad);background:#FFECE9;color:var(--coral-d);box-shadow:0 6px 0 rgba(232,91,76,.2)}
+  .opt[disabled]{cursor:default}
+  .next{margin-top:16px;width:100%;border:none;border-radius:18px;padding:16px;font-family:var(--display);font-weight:700;font-size:19px;
+    color:#fff;background:linear-gradient(135deg,var(--blue),var(--grape));cursor:pointer;box-shadow:0 8px 0 rgba(60,90,140,.3);transition:transform .1s}
+  .next:active{transform:translateY(3px)}
+  .feedrow{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:900;font-size:16px}
+  .feedrow.good{color:var(--mint-d)} .feedrow.bad{color:var(--coral-d)}
+
+  .tip{background:#EEF7FF;border:3px solid var(--blue);border-radius:18px;padding:14px 16px;font-weight:800;line-height:1.5;font-size:15px;margin-bottom:14px}
+  .note{background:#FFF3D6;border:3px dashed var(--sun);border-radius:16px;padding:10px 14px;font-weight:800;font-size:13px;color:var(--sun-d);margin-bottom:14px}
+
+  /* flashcards */
+  .fcard{background:#fff;border:3px solid var(--line);border-radius:26px;padding:34px 20px;box-shadow:var(--shadow);
+    text-align:center;cursor:pointer;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    transition:transform .15s;user-select:none}
+  .fcard:active{transform:scale(.98)}
+  .fcard .front{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.25}
+  .fcard .back{font-family:var(--body);font-weight:900;font-size:22px;color:var(--grape-d);line-height:1.3}
+  .fcard .side{font-size:12px;font-weight:900;letter-spacing:1px;color:var(--ink-soft);text-transform:uppercase}
+  .fdots{display:flex;justify-content:center;gap:7px;margin:14px 0;flex-wrap:wrap}
+  .fdots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}
+  .fdots i.on{background:var(--coral)}
+  .fnav{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+  .result{text-align:center;background:#fff;border:3px solid var(--line);border-radius:28px;padding:26px 20px;box-shadow:var(--shadow)}
+  .result .bigstars{font-size:46px;letter-spacing:6px;margin:6px 0 2px}
+  .result h2{font-family:var(--display);font-weight:700;font-size:28px;margin:8px 0 2px}
+  .result .sc{font-weight:900;color:var(--ink-soft);font-size:16px;margin-bottom:18px}
+  .rbtns{display:grid;gap:12px}
+  .btn{border:none;border-radius:18px;padding:15px;font-family:var(--display);font-weight:700;font-size:18px;color:#fff;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.18);transition:transform .1s;width:100%}
+  .btn:active{transform:translateY(3px)}
+  .btn.go{background:linear-gradient(135deg,var(--mint),#7BD46B);box-shadow:0 8px 0 rgba(47,167,132,.3)}
+  .btn.play{background:linear-gradient(135deg,var(--blue),var(--grape));box-shadow:0 8px 0 rgba(60,90,140,.3)}
+  .btn.ghost{background:#fff;color:var(--ink-soft);border:3px solid var(--line);box-shadow:0 6px 0 rgba(0,0,0,.06)}
+
+  .confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .conf{position:absolute;top:-12px;width:11px;height:14px;border-radius:2px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:1}}
+
+  .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+  .chip{border:3px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.05);font-family:var(--body)}
+  .chip.on{background:linear-gradient(135deg,var(--blue),var(--grape));color:#fff;border-color:transparent}
+  .chip:active{transform:translateY(2px)}
+
+  /* write tab */
+  .wmean{font-family:var(--display);font-weight:700;font-size:22px;line-height:1.3;text-align:center}
+  .winput{width:100%;font-family:var(--body);font-weight:800;font-size:24px;text-align:center;color:var(--ink);background:#FFFDF8;border:3px solid var(--line);border-radius:15px;padding:12px 14px;margin-top:14px}
+  .winput:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(91,169,240,.18)}
+  .accents{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+  .acc{border:2.5px solid var(--line);background:#fff;border-radius:10px;min-width:38px;padding:6px 8px;font-weight:900;font-size:16px;cursor:pointer;color:var(--ink)}
+  .acc:active{transform:translateY(2px)}
+  .wfeed{margin-top:12px;font-weight:900;font-size:16px;min-height:24px;text-align:center}
+  .wfeed.good{color:var(--mint-d)} .wfeed.bad{color:var(--coral-d)}
+  .wans{margin-top:6px;font-weight:900;font-size:26px;letter-spacing:2px;text-align:center}
+  .wans .ok{color:var(--mint-d)} .wans .no{color:var(--coral-d);text-decoration:underline wavy var(--coral-d)}
+
+  .nav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));z-index:40;
+    background:#fff;border:3px solid var(--line);border-radius:24px;padding:8px;display:flex;gap:6px;box-shadow:var(--shadow);width:min(420px,calc(100% - 28px))}
+  .navb{flex:1;border:none;background:transparent;border-radius:16px;padding:8px 4px;cursor:pointer;font-family:var(--body);font-weight:900;font-size:12.5px;color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;gap:3px}
+  .navb span{font-size:21px}
+  .navb.on{background:linear-gradient(135deg,var(--blue),var(--grape));color:#fff;box-shadow:0 5px 0 rgba(60,90,140,.25)}
+
+  .hint{text-align:center;color:var(--ink-soft);font-weight:800;font-size:13.5px;margin-top:18px}
+  @media(max-width:380px){ .qask{font-size:19px} .fcard .front{font-size:26px} }
+
+/* ============ hub ============ */
+.hubwrap{min-height:calc(100svh - 40px);display:flex;flex-direction:column;justify-content:center;max-width:480px;margin:0 auto}
+.hubbrand{text-align:center;margin-bottom:22px}
+.hubbrand h1{font-family:var(--display);font-weight:700;font-size:34px;margin:10px 0 2px}
+.hubbrand p{font-weight:800;color:var(--ink-soft);margin:0;font-size:14px}
+.hubcard{display:block;text-decoration:none;color:#fff;border-radius:26px;padding:22px 20px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:transform .12s;border:none;width:100%;text-align:left;cursor:pointer;font-family:var(--body)}
+.hubcard:active{transform:translateY(3px)}
+.hubcard .badge{font-family:var(--display);font-weight:700;font-size:13px;background:rgba(255,255,255,.28);padding:4px 12px;border-radius:999px}
+.hubcard h2{font-family:var(--display);font-weight:700;font-size:26px;margin:10px 0 4px}
+.hubcard p{margin:0;font-weight:800;opacity:.95;font-size:14px}
+.hubcard .em{position:absolute;right:-6px;bottom:-12px;font-size:84px;opacity:.9;transform:rotate(-8deg)}
+.hzh{background:linear-gradient(135deg,var(--coral),var(--sun))}
+.hes{background:linear-gradient(135deg,var(--blue),var(--grape))}
+</style>
+</head>
+<body>
+<div class="clouds"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div></div>
+<div class="app" id="app"></div>
+<div id="navhost"></div>
+<div class="confetti" id="confetti"></div>
+<script>
+/* ============================================================
+   SHARED HELPERS
+   ============================================================ */
+function bunny(mood){ // happy | cheer | think
+  const eye = mood==='cheer' ? '<path d="M40 50 q5 -6 10 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M70 50 q5 -6 10 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="45" cy="52" r="4.5" fill="#3B3024"/><circle cx="75" cy="52" r="4.5" fill="#3B3024"/>';
+  const mouth = mood==='think' ? '<circle cx="60" cy="64" r="3" fill="#3B3024"/>'
+    : '<path d="M53 62 q7 8 14 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="42" cy="26" rx="11" ry="22" fill="#FBE3EC" stroke="#3B3024" stroke-width="3"/>
+    <ellipse cx="78" cy="26" rx="11" ry="22" fill="#FBE3EC" stroke="#3B3024" stroke-width="3"/>
+    <ellipse cx="42" cy="28" rx="5" ry="13" fill="#F7B8CE"/>
+    <ellipse cx="78" cy="28" rx="5" ry="13" fill="#F7B8CE"/>
+    <circle cx="60" cy="62" r="34" fill="#FCEAF1" stroke="#3B3024" stroke-width="3"/>
+    <circle cx="44" cy="66" r="6" fill="#F7B8CE" opacity=".8"/>
+    <circle cx="76" cy="66" r="6" fill="#F7B8CE" opacity=".8"/>
+    ${eye}
+    <path d="M57 57 l6 0 -3 4 z" fill="#E88AA8"/>
+    ${mouth}
+  </svg>`;
+}
+function confetti(){
+  const box=document.querySelector('#confetti'); const colors=['#FF7A6B','#FFC43C','#46C9A0','#5BA9F0','#A87BE6','#FF9ECF'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('i'); c.className='conf';
+    c.style.left=Math.random()*100+'vw'; c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(2.2+Math.random()*1.6)+'s'; c.style.animationDelay=(Math.random()*0.5)+'s';
+    box.appendChild(c); setTimeout(()=>c.remove(),4200);
+  }
+}
+document.addEventListener('click', e=>{
+  if(e.target.closest('[data-hub]')) location.hash='';
+});
+
+/* ============================================================
+   AUTH + CLOUD SYNC (SRS 3.6–3.9)
+   Talks to api/*.php. On static hosts (no PHP) it disables
+   itself quietly and progress simply stays on the device.
+   ============================================================ */
+const BLAuth = (()=>{
+const st = {available:false, checked:false, errDetail:'', user:null, csrf:'',
+            lastSync:+(localStorage.getItem('bl-last-sync')||0)};
+const reg = {};          /* appKey -> {get(), set(progress, rerender)} */
+const timers = {};
+
+function register(key, h){ reg[key]=h; }
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const css = document.createElement('style');
+css.textContent = `
+.authbox{max-width:440px;margin:24px auto;background:#fff;border:3px solid #3B3024;border-radius:22px;box-shadow:6px 6px 0 #3B3024;padding:24px}
+.authbox h2{margin:0 0 12px;font-family:var(--display)}
+.authbox label{display:block;font-weight:700;margin:12px 0 4px;font-size:14px}
+.authbox input{width:100%;box-sizing:border-box;border:3px solid #3B3024;border-radius:12px;padding:11px;font-size:15px;font-family:var(--body)}
+.authbox .btn{margin-top:14px}
+.authbox .msg{margin:10px 0;font-weight:700;font-size:14px}
+.authbox .msg.bad{color:#D94848}.authbox .msg.good{color:#2E9E5B}
+.authrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.authrow .btn{flex:1;min-width:120px;margin-top:0}
+.authlink{background:none;border:none;color:#5BA9F0;font-weight:700;cursor:pointer;padding:0;font-size:14px;text-decoration:underline}
+.profrow{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:2px dashed #eee;font-size:14px}
+.profrow b{text-align:right}
+.badge{display:inline-block;border:2px solid #3B3024;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700;background:#BEE3F8}
+.mgmodal{position:fixed;inset:0;background:rgba(59,48,36,.45);display:flex;align-items:center;justify-content:center;z-index:99;padding:20px}
+.mgmodal .authbox{margin:0;width:100%}
+`;
+document.head.appendChild(css);
+
+async function api(path, method, body){
+  const opt = {method: method||'GET', headers:{}};
+  if(body){ opt.headers['Content-Type']='application/json'; opt.body=JSON.stringify(body); }
+  if(st.csrf) opt.headers['X-CSRF']=st.csrf;
+  const r = await fetch('api/'+path, opt);
+  const d = await r.json().catch(()=>({ok:false,message:'Server error ('+r.status+')'}));
+  return d;
+}
+
+async function init(){
+  try{
+    const d = await api('me.php');
+    st.available = true; st.csrf = d.csrf||''; st.user = d.user||null;
+    if(st.user) syncAll(false);           /* silent max-merge on page load */
+  }catch(e){ st.available = false; }
+}
+
+/* ---------- sync (SRS 3.9: push debounced, server max-merges) ---------- */
+function push(key){
+  if(!st.available || !st.user || !reg[key]) return;
+  clearTimeout(timers[key]);
+  timers[key] = setTimeout(async ()=>{
+    const s = reg[key].get();
+    try{
+      const d = await api('progress.php','POST',{app:key, coins:s.coins, stars:s.stars, done:s.done, updatedAt:Date.now()});
+      if(d.ok && d.progress){
+        reg[key].set(d.progress,false);
+        st.lastSync = Date.now();
+        localStorage.setItem('bl-last-sync', String(st.lastSync));
+      }
+    }catch(e){ /* offline: stays local, retried on next change */ }
+  }, 1500);
+}
+async function syncAll(rerender){
+  for(const key of ['bunny-zh','bunny-es']){
+    if(!reg[key]) continue;
+    const s = reg[key].get();
+    try{
+      const d = await api('progress.php','POST',{app:key, coins:s.coins, stars:s.stars, done:s.done, updatedAt:Date.now()});
+      if(d.ok && d.progress) reg[key].set(d.progress, rerender);
+    }catch(e){}
+  }
+  st.lastSync = Date.now(); localStorage.setItem('bl-last-sync', String(st.lastSync));
+}
+async function pullReplace(){
+  for(const key of ['bunny-zh','bunny-es']){
+    if(!reg[key]) continue;
+    try{
+      const d = await api('progress.php?app='+key);
+      if(d.ok && d.progress) reg[key].set(d.progress, true);
+    }catch(e){}
+  }
+}
+
+/* ---------- first-login merge dialog (SRS REQ-3.9.x) ---------- */
+async function mergeDialog(){
+  let hasCloud = false;
+  for(const key of ['bunny-zh','bunny-es']){
+    try{
+      const d = await api('progress.php?app='+key);
+      if(d.ok && d.progress && (d.progress.coins > 0 ||
+          Object.keys(d.progress.stars||{}).length || Object.keys(d.progress.done||{}).length)) hasCloud = true;
+    }catch(e){}
+  }
+  if(!hasCloud){ await syncAll(false); showMe(); return; }
+  const m = document.createElement('div');
+  m.className = 'mgmodal';
+  m.innerHTML = `<div class="authbox">
+    <h2>☁️ Sync your progress?</h2>
+    <p>Combine the progress stored <b>on this device</b> with your <b>cloud account</b>?
+    The best stars and the most coins are always kept — nothing is lost.</p>
+    <div class="authrow">
+      <button class="btn play" id="mgYes">Combine ✅</button>
+      <button class="btn ghost" id="mgCloud" style="color:#3B3024">Use cloud only</button>
+    </div></div>`;
+  document.body.appendChild(m);
+  m.querySelector('#mgYes').onclick = async ()=>{ m.remove(); await syncAll(false); showMe(); };
+  m.querySelector('#mgCloud').onclick = async ()=>{ m.remove(); await pullReplace(); showMe(); };
+}
+
+/* ---------- auth actions ---------- */
+async function login(username, password){
+  const d = await api('login.php','POST',{username,password});
+  if(d.ok){ st.user = d.user; mergeDialog(); }
+  return d;
+}
+async function signup(username, password){
+  const d = await api('register.php','POST',{username,password});
+  if(d.ok){ st.user = d.user; await syncAll(false); }
+  return d;
+}
+async function logout(){
+  await api('logout.php','POST',{});
+  st.user = null;
+  showMe();
+}
+async function forgot(username){
+  return api('forgot.php','POST',{username});
+}
+async function profileAction(action, extra){
+  const d = await api('profile.php','POST',Object.assign({action}, extra||{}));
+  if(d.ok && d.user) st.user = d.user;
+  return d;
+}
+
+/* ---------- landing page (before entering the courses) ---------- */
+function shouldGate(){
+  return st.available && !st.user && !sessionStorage.getItem('bl-guest');
+}
+function showLanding(){
+  const app = document.querySelector('#app');
+  document.querySelector('#navhost').innerHTML='';
+  app.innerHTML = `
+  <div class="hubwrap">
+    <div class="hubbrand">
+      <div class="bun" style="margin:0 auto">${bunny('cheer')}</div>
+      <h1>Bunny Learning</h1>
+      <p>Learn Chinese &amp; Spanish — hop in! 🐰</p>
+    </div>
+    <div class="authbox" style="margin-top:8px">
+      <button class="btn play" id="l_login">🚀 Log in</button>
+      <button class="btn" style="background:#FFC43C;color:#3B3024;margin-top:12px" id="l_signup">🐰 Create account</button>
+      <p style="text-align:center;margin:14px 0 0">
+        <button class="authlink" id="l_guest">continue without an account →</button>
+      </p>
+      <p style="font-size:12px;color:#999;text-align:center;margin:10px 0 0">An account saves your stars &amp; coins in the cloud, so you can learn on any device.</p>
+    </div>
+  </div>`;
+  const $ = s=>app.querySelector(s);
+  $('#l_login').onclick  = ()=>{ location.hash='#/me'; renderAuth(app,'login'); };
+  $('#l_signup').onclick = ()=>{ location.hash='#/me'; renderAuth(app,'signup'); };
+  $('#l_guest').onclick  = ()=>{ sessionStorage.setItem('bl-guest','1'); renderHub(); };
+}
+function enterApp(){ sessionStorage.removeItem('bl-guest'); location.hash=''; route(); }
+
+/* ---------- Me tab UI ---------- */
+function showMe(){
+  const app = document.querySelector('#app');
+  if(!st.available){
+    app.innerHTML = `<div class="authbox"><h2>👤 Me</h2>
+      <p>This copy of Bunny Learning is running <b>without a working server connection</b>, so accounts and
+      cloud sync are turned off. All progress is safely stored on this device. 🐰</p>
+      ${st.errDetail ? `<p style="font-size:13px;color:#999"><b>Why?</b> ${esc(st.errDetail)}</p>` : ''}
+      <p style="font-size:13px;color:#999">Server self-check: <a href="api/health.php" target="_blank" style="color:#5BA9F0">open api/health.php</a> and send the result to your admin.</p></div>`;
+    return;
+  }
+  if(!st.user){ renderAuth(app); return; }
+  renderProfile(app);
+}
+
+function renderAuth(app, mode, msg, msgBad){
+  app.innerHTML = `<div class="authbox">
+    <h2>${mode==='signup' ? '🐰 Create your account' : mode==='forgot' ? '🔑 Forgot password' : '👋 Log in'}</h2>
+    <div class="msg ${msgBad?'bad':'good'}">${esc(msg||'')}</div>
+    ${mode==='forgot' ? `
+      <label>Username<input id="a_u" autocomplete="username"></label>
+      <button class="btn play" id="a_go">Send reset link 📧</button>
+      <p style="font-size:13px">Works only if your account has a verified email address — otherwise ask a parent/teacher to reset it in the admin console.</p>
+      <p><button class="authlink" id="a_sw">← Back to log in</button></p>`
+    : `
+      <label>Username<input id="a_u" autocomplete="username" placeholder="3–20 letters or digits"></label>
+      <label>Password<input id="a_p" type="password" autocomplete="${mode==='signup'?'new-password':'current-password'}" placeholder="${mode==='signup'?'8+ characters, a letter and a digit':''}"></label>
+      <button class="btn play" id="a_go">${mode==='signup'?'Sign up 🎉':'Log in 🚀'}</button>
+      <p>
+        <button class="authlink" id="a_sw">${mode==='signup'?'Already have an account? Log in':'New here? Create an account'}</button>
+        ${mode==='login'?'· <button class="authlink" id="a_fg">Forgot password?</button>':''}
+      </p>`}
+  </div>`;
+  const $ = s=>app.querySelector(s);
+  $('#a_go').onclick = async ()=>{
+    const u = $('#a_u').value.trim(), p = $('#a_p') ? $('#a_p').value : '';
+    let d;
+    if(mode==='signup') d = await signup(u,p);
+    else if(mode==='forgot'){ d = await forgot(u); renderAuth(app,'login', d.message, !d.ok); return; }
+    else d = await login(u,p);
+    if(!d.ok) renderAuth(app, mode, d.message||'Something went wrong.', true);
+    else if(!st.user) renderAuth(app,'login','Welcome! 🎉');
+    /* login/signup success → mergeDialog()/syncAll runs, then enters the courses */
+    else if(mode==='signup'){ enterApp(); }
+    /* for login, mergeDialog()/enterApp() handles navigation */
+  };
+  $('#a_sw').onclick = ()=>renderAuth(app, mode==='signup'||mode==='forgot' ? 'login' : 'signup');
+  const fg = $('#a_fg'); if(fg) fg.onclick = ()=>renderAuth(app,'forgot');
+}
+
+function renderProfile(app, msg, msgBad){
+  const u = st.user;
+  let coins = 0, starCount = 0;
+  for(const key in reg){
+    const s = reg[key].get(); coins += s.coins||0;
+    starCount += Object.values(s.stars||{}).reduce((a,b)=>a+b,0);
+  }
+  const emailRow =
+    u.email_state==='verified' ? `${esc(u.email)} <span class="badge">verified ✓</span>` :
+    u.email_state==='pending'  ? `${esc(u.email)} <span class="badge" style="background:#FDE68A">pending — check inbox</span>` :
+    '<span style="color:#999">no email yet</span>';
+  app.innerHTML = `<div class="authbox">
+    <h2>👤 ${esc(u.username)} ${u.role==='admin'?'<span class="badge" style="background:#FDE68A">admin</span>':''}</h2>
+    <div class="msg ${msgBad?'bad':'good'}">${esc(msg||'')}</div>
+    <div class="profrow"><span>🪙 Coins</span><b>${coins}</b></div>
+    <div class="profrow"><span>⭐ Stars</span><b>${starCount}</b></div>
+    <div class="profrow"><span>📧 Email</span><b>${emailRow}</b></div>
+    <div class="profrow"><span>📅 Member since</span><b>${esc((u.created_at||'').slice(0,10))}</b></div>
+    <div class="profrow"><span>☁️ Last sync</span><b>${st.lastSync ? new Date(st.lastSync).toLocaleString() : 'never'}</b></div>
+    <div class="authrow">
+      <button class="btn" style="background:#5BA9F0" id="p_sync">Sync now ☁️</button>
+      ${u.role==='admin'?'<button class="btn" style="background:#FFC43C;color:#3B3024" onclick="location.href=\'admin.php\'">Admin console 👩‍🏫</button>':''}
+    </div>
+    <hr style="border:none;border-top:2px dashed #eee;margin:16px 0">
+    ${u.must_change_password ? '<p class="msg bad">⚠️ Please choose a new password now.</p>' : ''}
+    <div id="acc">
+      <button class="authlink" data-a="pw">🔑 Change password</button> ·
+      <button class="authlink" data-a="em">📧 ${u.email_state==='none'?'Add email':'Change / remove email'}</button>
+      ${u.email_state==='pending'?'· <button class="authlink" data-a="rs">Resend verification</button>':''}
+      · <button class="authlink" data-a="out">🚪 Log out</button> ·
+      <button class="authlink" style="color:#D94848" data-a="del">Delete account</button>
+    </div>
+    <div id="accForm"></div>
+  </div>`;
+  const $ = s=>app.querySelector(s);
+  $('#p_sync').onclick = async ()=>{ await syncAll(false); renderProfile(app,'Synced ✔'); };
+  app.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{
+    const a = b.dataset.a, f = $('#accForm');
+    if(a==='out'){ logout(); return; }
+    if(a==='rs'){ profileAction('resend_verification').then(d=>renderProfile(app,d.message,!d.ok)); return; }
+    if(a==='pw') f.innerHTML = `
+      <label>Current password<input type="password" id="f_o" autocomplete="current-password"></label>
+      <label>New password<input type="password" id="f_n" autocomplete="new-password"></label>
+      <button class="btn play" id="f_go">Change password</button>`;
+    if(a==='em') f.innerHTML = u.email_state==='none' ? `
+      <label>Email address<input type="email" id="f_e" placeholder="you@example.com"></label>
+      <p style="font-size:12px;color:#777">Needed for password resets. You will get a verification mail.</p>
+      <button class="btn play" id="f_go">Add email 📧</button>` : `
+      <label>New email address (optional)<input type="email" id="f_e" placeholder="you@example.com"></label>
+      <button class="btn play" id="f_go">Change email 📧</button>
+      <label style="margin-top:14px">Password (to remove email)<input type="password" id="f_pw"></label>
+      <button class="btn ghost" style="color:#3B3024" id="f_rm">Remove email</button>`;
+    if(a==='del') f.innerHTML = `
+      <p class="msg bad">This deletes your account and removes your cloud progress. Type your password to confirm:</p>
+      <label>Password<input type="password" id="f_pw"></label>
+      <button class="btn ghost" style="color:#D94848" id="f_go">Delete my account forever</button>`;
+    const go = $('#f_go');
+    if(go) go.onclick = async ()=>{
+      let d;
+      if(a==='pw') d = await profileAction('change_password',{old_password:$('#f_o').value, new_password:$('#f_n').value});
+      else if(a==='em') d = await profileAction('add_email',{email:$('#f_e').value});
+      else if(a==='del'){ d = await profileAction('delete_account',{password:$('#f_pw').value});
+        if(d.ok){ st.user=null; showMe(); return; } }
+      renderProfile(app, d.message, !d.ok);
+    };
+    const rm = $('#f_rm');
+    if(rm) rm.onclick = async ()=>{
+      const d = await profileAction('remove_email',{password:$('#f_pw').value});
+      renderProfile(app, d.message, !d.ok);
+    };
+  });
+}
+
+window.BLSync = {push};     /* modules call this inside persist() */
+init();
+return {register, showMe, showLanding, shouldGate, get user(){ return st.user; }};
+})();
+
+/* ============================================================
+   CHINESE APP MODULE
+   ============================================================ */
+const ZH = (()=>{
+const NAV = `<nav class="nav">
+  <button class="navb" data-hub><span>🏠</span>Home</button>
+  <button class="navb on" data-tab="play"><span>🎮</span>Play</button>
+  <button class="navb" data-tab="read"><span>📖</span>Read</button>
+  <button class="navb" data-tab="write"><span>✍️</span>Write</button>
+  <button class="navb" data-tab="me"><span>👤</span>Me</button>
+</nav>`;
+
+/* ============================================================
+   BUNNY MASCOT (reused from Charla, original SVG)
+   ============================================================ */
+function bunny(mood){ // happy | cheer | think
+  const eye = mood==='cheer' ? '<path d="M40 50 q5 -6 10 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M70 50 q5 -6 10 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="45" cy="52" r="4.5" fill="#3B3024"/><circle cx="75" cy="52" r="4.5" fill="#3B3024"/>';
+  const mouth = mood==='think' ? '<circle cx="60" cy="64" r="3" fill="#3B3024"/>'
+    : '<path d="M53 62 q7 8 14 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="42" cy="26" rx="11" ry="22" fill="#FBE3EC" stroke="#3B3024" stroke-width="3"/>
+    <ellipse cx="78" cy="26" rx="11" ry="22" fill="#FBE3EC" stroke="#3B3024" stroke-width="3"/>
+    <ellipse cx="42" cy="28" rx="5" ry="13" fill="#F7B8CE"/>
+    <ellipse cx="78" cy="28" rx="5" ry="13" fill="#F7B8CE"/>
+    <circle cx="60" cy="62" r="34" fill="#FCEAF1" stroke="#3B3024" stroke-width="3"/>
+    <circle cx="44" cy="66" r="6" fill="#F7B8CE" opacity=".8"/>
+    <circle cx="76" cy="66" r="6" fill="#F7B8CE" opacity=".8"/>
+    ${eye}
+    <path d="M57 57 l6 0 -3 4 z" fill="#E88AA8"/>
+    ${mouth}
+  </svg>`;
+}
+
+/* ============================================================
+   LEARNING CONTENT — Grade 4 dictation sheet (23 Oct)
+   ============================================================ */
+const WORDS = [
+  {zh:'悠閒', py:'yōu xián',   en:'leisurely, relaxed'},
+  {zh:'結果', py:'jié guǒ',    en:'as a result'},
+  {zh:'緊張', py:'jǐn zhāng',  en:'nervous'},
+  {zh:'感動', py:'gǎn dòng',   en:'moved, touched'},
+  {zh:'專心', py:'zhuān xīn',  en:'focused, attentive'},
+  {zh:'認真', py:'rèn zhēn',   en:'serious, earnest'},
+  {zh:'塗',   py:'tú',         en:'to smear, to spread'},
+  {zh:'抹',   py:'mǒ',         en:'to wipe'},
+  {zh:'恭喜', py:'gōng xǐ',    en:'congratulations'},
+  {zh:'煩惱', py:'fán nǎo',    en:'worried, troubled'},
+];
+
+const PASSAGE = [
+  {zh:'果然',py:'guǒ rán'},{zh:'，'},
+  {zh:'每',py:'měi'},{zh:'個',py:'gè'},{zh:'人',py:'rén'},{zh:'的',py:'de'},
+  {zh:'臉上',py:'liǎn shang'},{zh:'都',py:'dōu'},{zh:'化了',py:'huà le'},
+  {zh:'「黑」',py:'hēi'},{zh:'粧',py:'zhuāng'},{zh:'。'},
+  {zh:'張志明',py:'Zhāng Zhìmíng'},{zh:'的',py:'de'},{zh:'最巧',py:'zuì qiǎo'},{zh:'，'},
+  {zh:'正好',py:'zhèng hǎo'},{zh:'一團',py:'yì tuán'},{zh:'墨汁',py:'mò zhī'},
+  {zh:'塗在',py:'tú zài'},{zh:'鼻子上',py:'bí zi shang'},{zh:'，'},
+  {zh:'他',py:'tā'},{zh:'用手',py:'yòng shǒu'},{zh:'去抹',py:'qù mǒ'},{zh:'，'},
+  {zh:'越抹越大',py:'yuè mǒ yuè dà'},{zh:'，'},
+  {zh:'最後',py:'zuì hòu'},{zh:'變成了',py:'biàn chéng le'},
+  {zh:'「烏鼻大將軍」',py:'wū bí dà jiàng jūn'},{zh:'。'}
+];
+const PASSAGE_TEXT = PASSAGE.map(t=>t.zh).join('');
+const PASSAGE_EN = "Sure enough, everyone's face was painted “black”. Zhāng Zhìmíng's was the funniest — a blob of ink landed right on his nose. He wiped it with his hand, but the more he wiped, the bigger it got, until in the end he turned into “General Black Nose”.";
+
+const IDIOMS = [
+  {zh:'手忙腳亂', py:'shǒu máng jiǎo luàn', en:'in a frantic rush; all flustered',
+   def:'形容做事慌張，沒有條理。', defEn:'Describes doing things in a flustered, disorganised way.',
+   ex:'爸爸快回家了，我手忙腳亂地收拾地上的玩具。', exEn:'Dad is almost home — I frantically tidy up the toys on the floor.',
+   syn:['七手八腳'], ant:['有條不紊','從容不迫']},
+  {zh:'有口難言', py:'yǒu kǒu nán yán', en:'hard to speak out; unable to explain',
+   def:'因為某些原因，有話不便或不敢對別人說。', defEn:'For certain reasons, one cannot or dare not say something to others.',
+   ex:'既然他有口難言，你就不要再逼他說下去了！', exEn:'Since he finds it hard to explain, stop pressuring him to talk!',
+   syn:[], ant:['暢所欲言']},
+  {zh:'靈機一動', py:'líng jī yí dòng', en:'a sudden flash of inspiration',
+   def:'突然想出主意或辦法。靈機：機靈的心思。', defEn:'Suddenly coming up with an idea or a clever plan.',
+   ex:'姐姐突然靈機一動，想出解決問題的方法。', exEn:'Big sister suddenly had a brainwave and thought of a way to solve the problem.',
+   syn:['急中生智'], ant:['一籌莫展']},
+];
+
+const CHAPTERS = [
+  {id:'ch1', cls:'ch1', badge:'Chapter 1', title:'Vocabulary', zh:'運用字詞', sub:'10 dictation words with pinyin', em:'🖌️',
+   lessons:[
+     {id:'w_zh2en', ic:'💬', nm:'中文 → English', ds:'What does the word mean?', kind:'quiz', qtype:'zh2en'},
+     {id:'w_en2zh', ic:'🎯', nm:'English → 中文', ds:'Pick the right Chinese word', kind:'quiz', qtype:'en2zh'},
+     {id:'w_py',    ic:'🔤', nm:'Pinyin Pick', ds:'Match the pinyin to the word', kind:'quiz', qtype:'py2zh'},
+     {id:'w_listen',ic:'🔊', nm:'Listen & Choose', ds:'Hear it, then find it', kind:'quiz', qtype:'listen2zh'},
+   ]},
+  {id:'ch2', cls:'ch2', badge:'Chapter 2', title:'The Passage', zh:'背默段落', sub:'Read, listen and fill the blanks', em:'📖',
+   lessons:[
+     {id:'p_read', ic:'🐰', nm:'Read & Listen', ds:'Study the passage with pinyin', kind:'read'},
+     {id:'p_quiz', ic:'🧩', nm:'Fill the Blanks', ds:'Complete the missing words', kind:'quiz', qtype:'blank'},
+   ]},
+  {id:'ch3', cls:'ch3', badge:'Chapter 3', title:'Idiom Challenge', zh:'挑戰加分題', sub:'3 bonus idioms · +5 marks each', em:'🏆',
+   lessons:[
+     {id:'i_cards', ic:'🃏', nm:'Idiom Cards', ds:'Meanings, examples & friends', kind:'idioms'},
+     {id:'i_quiz',  ic:'🏆', nm:'Idiom Quiz', ds:'Master the challenge idioms', kind:'quiz', qtype:'idiom'},
+   ]},
+];
+
+const BLANKS = [
+  {pre:'果然，每個人的', post:'上都化了「黑」粧。', ans:'臉', opts:['臉','手','鼻子','頭'], hint:'face'},
+  {pre:'張志明的最巧，正好一團', post:'塗在鼻子上。', ans:'墨汁', opts:['墨汁','顏料','胭脂','口水'], hint:'ink'},
+  {pre:'正好一團墨汁塗在', post:'上。', ans:'鼻子', opts:['鼻子','眼睛','耳朵','嘴巴'], hint:'nose'},
+  {pre:'他用手去抹，越抹越', post:'。', ans:'大', opts:['大','小','多','髒'], hint:'bigger'},
+  {pre:'最後變成了「烏鼻', post:'」。', ans:'大將軍', opts:['大將軍','小丑','大花貓','小熊'], hint:'general'},
+  {pre:'果然，每個人的臉上都化了「黑」', post:'。', ans:'粧', opts:['粧','花','點','印'], hint:'make-up'},
+];
+/* ============================================================
+   STATE + PERSISTENCE
+   ============================================================ */
+const store = {
+  load(){ try{ return JSON.parse(localStorage.getItem('bunny-zh')||'{}'); }catch(e){ return {}; } },
+  save(s){ try{ localStorage.setItem('bunny-zh', JSON.stringify(s)); }catch(e){} }
+};
+let S = Object.assign({coins:0, stars:{}, done:{}}, store.load());
+function persist(){ store.save(S); if(window.BLSync) BLSync.push('bunny-zh'); }
+function starsOf(id){ return S.stars[id]||0; }
+function addStars(id,n){ if(n>starsOf(id)){ S.stars[id]=n; persist(); } }
+function addCoins(n){ S.coins+=n; persist(); renderCoins(); }
+
+/* ============================================================
+   TEXT-TO-SPEECH (Mandarin only: zh-TW first, then zh-CN.
+   Characters are traditional, but pronunciation is Mandarin —
+   Cantonese voices (zh-HK / yue) are deliberately excluded.)
+   ============================================================ */
+let zhVoice = null;
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  const mandarin = vs.filter(v=>/^zh/i.test(v.lang) && !/zh[-_]HK/i.test(v.lang) && !/yue/i.test(v.lang));
+  zhVoice = mandarin.find(v=>/zh[-_]TW/i.test(v.lang)) || mandarin[0] || null;
+}
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text, rate){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = zhVoice ? zhVoice.lang : 'zh-TW';
+  if(zhVoice) u.voice = zhVoice;
+  u.rate = rate || 0.85;
+  speechSynthesis.speak(u);
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = s=>document.querySelector(s);
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function sample(a,n,ex){ const pool=a.filter(x=>x!==ex); return shuffle(pool).slice(0,n); }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function starRow(n,total){ let h=''; for(let i=0;i<(total||3);i++) h+= i<n ? '★' : '<span class="off">★</span>'; return h; }
+function confetti(){
+  const box=$('#confetti'); const colors=['#FF7A6B','#FFC43C','#46C9A0','#5BA9F0','#A87BE6','#FF9ECF'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('i'); c.className='conf';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(2.2+Math.random()*1.6)+'s';
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    c.style.transform='rotate('+Math.random()*360+'deg)';
+    box.appendChild(c); setTimeout(()=>c.remove(),4200);
+  }
+}
+
+/* ============================================================
+   QUIZ BUILDER
+   ============================================================ */
+function buildQuestions(lesson){
+  const qs=[]; const t=lesson.qtype;
+  if(t==='zh2en' || t==='en2zh' || t==='py2zh' || t==='listen2zh'){
+    const items=shuffle(WORDS).slice(0,8);
+    items.forEach(w=>{
+      const others=sample(WORDS,3,w);
+      if(t==='zh2en'){
+        qs.push({ask:`What does <span class="zh">${w.zh}</span> mean?`, py:w.py, speak:w.zh,
+          opts:shuffle([w,...others]).map(o=>({label:o.en, ok:o===w}))});
+      }else if(t==='en2zh'){
+        qs.push({ask:`Which word means “${w.en}”?`, speak:w.en,
+          opts:shuffle([w,...others]).map(o=>({label:o.zh, py:o.py, zh:1, ok:o===w}))});
+      }else if(t==='py2zh'){
+        qs.push({ask:`Which word is read <span class="py">${w.py}</span>?`, speak:w.zh,
+          opts:shuffle([w,...others]).map(o=>({label:o.zh, zh:1, ok:o===w}))});
+      }else{
+        qs.push({ask:'🔊 Listen and tap the word you hear', speak:w.zh, autoSpeak:1,
+          opts:shuffle([w,...others]).map(o=>({label:o.zh, py:o.py, zh:1, ok:o===w}))});
+      }
+    });
+  }
+  else if(t==='blank'){
+    shuffle(BLANKS).forEach(b=>{
+      qs.push({ask:`<span class="zh">${esc(b.pre)}</span><span class="blank">？</span><span class="zh">${esc(b.post)}</span>`,
+        py:'Fill in: '+b.hint, speak:(b.pre+b.ans+b.post).replace(/[「」]/g,''),
+        opts:shuffle(b.opts).map(o=>({label:o, zh:1, ok:o===b.ans}))});
+    });
+  }
+  else if(t==='idiom'){
+    IDIOMS.forEach(i=>{
+      const others=sample(IDIOMS,2,i).concat([{zh:'七手八腳'},{zh:'暢所欲言'},{zh:'一籌莫展'},{zh:'急中生智'}]);
+      const pool=shuffle(others.filter(o=>o.zh!==i.zh)).slice(0,3);
+      qs.push({ask:`Which idiom means “${i.en}”?`, py:i.py, speak:i.zh,
+        opts:shuffle([{zh:i.zh,ok:1},...pool.map(o=>({zh:o.zh}))]).map(o=>({label:o.zh, zh:1, ok:!!o.ok}))});
+      const exQ = i.ex.replace(i.zh,'<span class="blank">？</span>');
+      const pool2=shuffle(IDIOMS.filter(o=>o!==i)).map(o=>o.zh).concat(['七手八腳','暢所欲言']).slice(0,3);
+      qs.push({ask:`<span class="zh">${exQ}</span>`, py:'Which idiom fits?', speak:i.ex,
+        opts:shuffle([i.zh,...pool2]).map(o=>({label:o, zh:1, ok:o===i.zh}))});
+    });
+    return shuffle(qs);
+  }
+  return qs;
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+const app=$('#app');
+let currentTab='play';
+
+function renderCoins(){ const c=$('.coins b'); if(c) c.textContent=S.coins; }
+
+function header(){
+  return `<div class="top">
+    <button class="back" data-hub style="width:42px;height:42px;font-size:18px">🏠</button>
+    <div class="wm">Bunny Chinese<small>play &amp; learn 中文 · Grade 4 dictation</small></div>
+    <div class="coins">🪙 <b>${S.coins}</b></div>
+  </div>`;
+}
+
+function showHome(){
+  const hellos=['Hi! What do you want to practise today? 你好！','Ready for the dictation? Let’s hop to it! 🐰','加油！Pick a chapter to begin!'];
+  const hello=hellos[Math.floor(Math.random()*hellos.length)];
+  app.innerHTML = header() + `
+  <div class="screen on">
+    <div class="hello"><div class="bun">${bunny('happy')}</div><div class="bubble">${hello}</div></div>
+    <div class="grid">
+      ${CHAPTERS.map((ch,i)=>{
+        const tot=ch.lessons.length*3, got=ch.lessons.reduce((a,l)=>a+starsOf(l.id),0);
+        return `<button class="chap ${ch.cls}" data-ch="${i}">
+          <span class="badge">${ch.badge}</span>
+          <h2>${ch.title}<span class="zh">${ch.zh}</span></h2>
+          <p>${ch.sub}</p>
+          <div class="stars">⭐ ${got} / ${tot}</div>
+          <div class="em">${ch.em}</div>
+        </button>`;}).join('')}
+    </div>
+    <div class="hint">Tap a chapter to start ✨</div>
+  </div>`;
+  app.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>showChapter(+b.dataset.ch));
+}
+
+function showChapter(ci){
+  const ch=CHAPTERS[ci];
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar"><button class="back" id="bk">←</button><div class="htitle">${ch.title}<span class="zh">${ch.zh}</span></div></div>
+    <div class="levels">
+      ${ch.lessons.map(l=>`<button class="lvl" data-l="${l.id}">
+        <div class="ic">${l.ic}</div><div class="nm">${l.nm}</div><div class="ds">${l.ds}</div>
+        <div class="ss">${starRow(starsOf(l.id))}</div>
+      </button>`).join('')}
+    </div>
+  </div>`;
+  $('#bk').onclick=showHome;
+  app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>openLesson(ch,b.dataset.l));
+}
+
+function openLesson(ch,lid){
+  const l=ch.lessons.find(x=>x.id===lid);
+  if(l.kind==='quiz') startQuiz(ch,l);
+  else if(l.kind==='read') showPassage(ch,l);
+  else if(l.kind==='idioms') showIdiomCards(ch,l);
+}
+
+/* ---------- quiz play ---------- */
+let Q=null;
+function startQuiz(ch,l){
+  Q={ch,l,qs:buildQuestions(l),i:0,first:0,done:false};
+  renderQ();
+}
+function renderQ(){
+  const q=Q.qs[Q.i];
+  const two = q.opts.length===4 ? 'two' : '';
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar"><button class="back" id="bk">←</button><div class="htitle">${Q.l.nm}</div></div>
+    <div class="prog"><i style="width:${(Q.i/Q.qs.length)*100}%"></i></div>
+    <div class="qcard">
+      <div class="qask">${q.ask}${q.py?`<span class="py">${q.py}</span>`:''}</div>
+      ${q.speak?`<button class="spk" id="spk">🔊 Listen</button>`:''}
+      <div class="opts ${two}">
+        ${q.opts.map((o,i)=>`<button class="opt ${o.zh?'zhopt':''}" data-i="${i}">${o.label}${o.py?`<span class="py">${o.py}</span>`:''}</button>`).join('')}
+      </div>
+      <div class="feedrow" id="feed" style="display:none"></div>
+      <button class="next" id="next" style="display:none">${Q.i===Q.qs.length-1?'See results 🏁':'Next →'}</button>
+    </div>
+  </div>`;
+  $('#bk').onclick=()=>showChapter(CHAPTERS.indexOf(Q.ch));
+  if(q.speak){ $('#spk').onclick=()=>speak(q.speak); }
+  if(q.autoSpeak){ setTimeout(()=>speak(q.speak),350); }
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.i));
+  $('#next').onclick=()=>{ Q.i++; Q.i<Q.qs.length ? renderQ() : showResult(); };
+}
+function answer(i){
+  const q=Q.qs[Q.i];
+  app.querySelectorAll('.opt').forEach((b,bi)=>{
+    b.disabled=true;
+    if(q.opts[bi].ok) b.classList.add('right');
+    else if(bi===i) b.classList.add('wrong');
+  });
+  const good=q.opts[i].ok;
+  if(good){ Q.first++; addCoins(10); }
+  const feed=$('#feed');
+  feed.style.display='flex';
+  feed.className='feedrow '+(good?'good':'bad');
+  feed.innerHTML = good
+    ? `<div class="bun sm">${bunny('cheer')}</div> Great job! +10 🪙`
+    : `<div class="bun sm">${bunny('think')}</div> Not quite — the answer is highlighted.`;
+  $('#next').style.display='block';
+  if(good) speak(q.opts[i].zh? q.opts[i].label : '好叻！');
+}
+function showResult(){
+  const n=Q.qs.length, c=Q.first, pct=c/n;
+  const st = pct===1?3 : pct>=0.7?2 : pct>=0.4?1 : 0;
+  addStars(Q.l.id, st);
+  if(st>=2) confetti();
+  const msgs=['Keep practising — you’ll get there! 💪','Good effort! One more try? 🌱','Great work! Almost perfect! 🌟','Perfect! You’re a star! 🏆'];
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="result">
+      <div class="bun" style="margin:0 auto">${bunny(st>=2?'cheer':'think')}</div>
+      <div class="bigstars">${'★'.repeat(st)}${'☆'.repeat(3-st)}</div>
+      <h2>${msgs[st]}</h2>
+      <div class="sc">You answered ${c} of ${n} correctly on the first try</div>
+      <div class="rbtns">
+        <button class="btn play" id="again">Play again 🔁</button>
+        <button class="btn ghost" id="back">Back to chapter</button>
+      </div>
+    </div>
+  </div>`;
+  $('#again').onclick=()=>startQuiz(Q.ch,Q.l);
+  $('#back').onclick=()=>showChapter(CHAPTERS.indexOf(Q.ch));
+}
+
+/* ---------- passage study ---------- */
+function passageHTML(showPy){
+  return PASSAGE.map(t=>{
+    if(!t.py) return t.zh;
+    return `<ruby>${t.zh}<rt>${t.py}</rt></ruby>`;
+  }).join('');
+}
+function showPassage(ch,l,inTab){
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar">${inTab?'':'<button class="back" id="bk">←</button>'}<div class="htitle">The Passage<span class="zh">背默段落</span></div></div>
+    <div class="tip">💡 Read along, tap <b>Listen</b> to hear it, then hide the pinyin when you feel ready. Tap any word to hear it!</div>
+    <div class="read" id="read">${passageHTML(true)}</div>
+    <div class="chiprow">
+      <button class="chip on" id="tgPy">🔤 Pinyin on</button>
+      <button class="chip" id="listen">🔊 Listen</button>
+      <button class="chip" id="tgEn">🇬🇧 English</button>
+    </div>
+    <div class="trans" id="trans" style="display:none">${PASSAGE_EN}</div>
+    ${inTab?'':`<button class="btn go" id="got" style="margin-top:16px">Got it! ✨</button>`}
+  </div>`;
+  const rd=$('#read');
+  let py=true;
+  $('#tgPy').onclick=e=>{ py=!py; rd.classList.toggle('nopy',!py); e.target.classList.toggle('on',py); e.target.textContent=py?'🔤 Pinyin on':'🔤 Pinyin off'; };
+  $('#listen').onclick=()=>speak(PASSAGE_TEXT,0.8);
+  $('#tgEn').onclick=e=>{ const t=$('#trans'); const on=t.style.display==='none'; t.style.display=on?'block':'none'; e.target.classList.toggle('on',on); };
+  rd.querySelectorAll('ruby').forEach(r=>r.onclick=()=>speak(r.childNodes[0].textContent.replace(/[「」]/g,'')));
+  if(!inTab){
+    $('#bk').onclick=()=>showChapter(CHAPTERS.indexOf(ch));
+    $('#got').onclick=()=>{ if(!S.done[l.id]){ S.done[l.id]=1; addCoins(15); } addStars(l.id,3); showChapter(CHAPTERS.indexOf(ch)); };
+  }
+}
+
+/* ---------- idiom cards ---------- */
+function idiomCard(i){
+  return `<div class="idiom" data-i="${i.zh}">
+    <div class="head">
+      <div>
+        <div class="izh">${i.zh}</div>
+        <div class="ipy">${i.py}</div>
+        <div class="ien">${i.en}</div>
+      </div>
+      <button class="mini" data-say="${i.zh}">🔊</button>
+      <div class="plus">＋</div>
+    </div>
+    <div class="body">
+      <div class="irow"><span class="lab d">Meaning</span><span class="zh">${i.def}</span><div class="sub">${i.defEn}</div></div>
+      <div class="irow"><span class="lab e">Example</span><span class="zh">${i.ex}</span><button class="mini" data-say="${i.ex}">🔊</button><div class="sub">${i.exEn}</div></div>
+      ${i.syn.length?`<div class="irow"><span class="lab s">Similar</span><span class="zh">${i.syn.join('、')}</span></div>`:''}
+      ${i.ant.length?`<div class="irow"><span class="lab a">Opposite</span><span class="zh">${i.ant.join('、')}</span></div>`:''}
+    </div>
+  </div>`;
+}
+function showIdiomCards(ch,l,inTab){
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar">${inTab?'':'<button class="back" id="bk">←</button>'}<div class="htitle">Idiom Challenge<span class="zh">挑戰加分題</span></div></div>
+    <div class="tip">💡 Each idiom earns <b>+5 bonus marks</b> in the dictation! Tap a card to open it.</div>
+    ${IDIOMS.map(idiomCard).join('')}
+    ${inTab?'':`<button class="btn go" id="got" style="margin-top:4px">Got it! ✨</button>`}
+  </div>`;
+  app.querySelectorAll('.idiom .head').forEach(h=>h.onclick=e=>{
+    if(e.target.dataset.say) return;
+    h.parentElement.classList.toggle('open');
+    h.querySelector('.plus').textContent = h.parentElement.classList.contains('open') ? '－' : '＋';
+  });
+  app.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say));
+  if(!inTab){
+    $('#bk').onclick=()=>showChapter(CHAPTERS.indexOf(ch));
+    $('#got').onclick=()=>{ if(!S.done[l.id]){ S.done[l.id]=1; addCoins(15); } addStars(l.id,3); showChapter(CHAPTERS.indexOf(ch)); };
+  }
+}
+
+/* ---------- read tab ---------- */
+function showReadTab(){
+  showPassage(null,null,true);
+  app.insertAdjacentHTML('beforeend',`
+    <div class="secttl">Idiom cards 🃏</div>
+    <div id="idiomList"></div>`);
+  const list=$('#idiomList');
+  list.innerHTML=IDIOMS.map(idiomCard).join('');
+  list.querySelectorAll('.idiom .head').forEach(h=>h.onclick=e=>{
+    if(e.target.dataset.say) return;
+    h.parentElement.classList.toggle('open');
+    h.querySelector('.plus').textContent = h.parentElement.classList.contains('open') ? '－' : '＋';
+  });
+  list.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say));
+}
+
+/* ---------- write tab (dictation trainer) ---------- */
+let W=null;
+function showWriteTab(){
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar"><div class="htitle">Write<span class="zh">默寫練習</span></div></div>
+    <div class="chiprow" id="sets">
+      <button class="chip on" data-set="words">🖌️ 10 Words</button>
+      <button class="chip" data-set="idioms">🏆 3 Idioms</button>
+    </div>
+    <div id="wbox"></div>
+  </div>`;
+  app.querySelectorAll('#sets .chip').forEach(c=>c.onclick=()=>{
+    app.querySelectorAll('#sets .chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on'); startWrite(c.dataset.set);
+  });
+  startWrite('words');
+}
+function startWrite(set){
+  const items = set==='words' ? WORDS : IDIOMS;
+  W={items:shuffle(items), i:0, ok:0, answered:false};
+  renderW();
+}
+function renderW(){
+  const it=W.items[W.i];
+  $('#wbox').innerHTML = `
+    <div class="qcard">
+      <div class="prog" style="margin-bottom:14px"><i style="width:${(W.i/W.items.length)*100}%"></i></div>
+      <div class="wcard" style="box-shadow:none;border:none;padding:4px">
+        <div class="wmean">“${it.en}”</div>
+        <div class="wpy">${it.py}</div>
+        <button class="spk" id="wspk">🔊 Listen</button>
+        <input class="winput" id="win" placeholder="寫在這裡…" autocomplete="off" autocapitalize="off" autocorrect="off" />
+        <div class="wfeed" id="wfeed"></div>
+        <div class="wans" id="wans"></div>
+      </div>
+      <div class="rbtns" style="margin-top:14px">
+        <button class="btn play" id="wcheck">Check ✅</button>
+        <button class="btn ghost" id="wshow">Show answer</button>
+      </div>
+    </div>`;
+  const inp=$('#win');
+  $('#wspk').onclick=()=>speak(it.zh);
+  setTimeout(()=>speak(it.zh),350);
+  const check=reveal=>{
+    if(W.answered) return;
+    const v=inp.value.trim().replace(/\s+/g,'');
+    if(!v && !reveal){ inp.focus(); return; }
+    W.answered=true;
+    const good = v===it.zh;
+    if(good){ W.ok++; addCoins(10); }
+    const feed=$('#wfeed');
+    feed.className='wfeed '+(good?'good':'bad');
+    feed.textContent = good ? 'Perfect! 好叻！ +10 🪙' : (reveal ? 'Here is the answer:' : 'Not quite — compare carefully:');
+    if(!good){
+      let h='';
+      for(let k=0;k<it.zh.length;k++){
+        const c=it.zh[k];
+        h+= v[k]===c ? `<span class="ok">${c}</span>` : `<span class="no">${c}</span>`;
+      }
+      $('#wans').innerHTML=h;
+    } else {
+      $('#wans').innerHTML=`<span class="ok">${it.zh}</span>`;
+    }
+    $('#wcheck').textContent = W.i===W.items.length-1 ? 'Finish 🏁' : 'Next →';
+    $('#wcheck').onclick=nextW;
+    inp.disabled=true;
+  };
+  $('#wcheck').onclick=()=>check(false);
+  $('#wshow').onclick=()=>check(true);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ W.answered ? nextW() : check(false); } });
+  inp.focus();
+}
+function nextW(){
+  W.i++; W.answered=false;
+  if(W.i<W.items.length){ renderW(); return; }
+  const pct=W.ok/W.items.length;
+  if(pct>=0.7) confetti();
+  $('#wbox').innerHTML = `
+    <div class="result">
+      <div class="bun" style="margin:0 auto">${bunny(pct>=0.7?'cheer':'think')}</div>
+      <div class="bigstars">${pct===1?'★★★':pct>=0.7?'★★☆':pct>=0.4?'★☆☆':'☆☆☆'}</div>
+      <h2>${pct===1?'Flawless dictation! 🏆':pct>=0.7?'Well done! 🌟':'Keep practising! 💪'}</h2>
+      <div class="sc">You wrote ${W.ok} of ${W.items.length} correctly</div>
+      <div class="rbtns">
+        <button class="btn play" id="wagain">Practise again 🔁</button>
+        <button class="btn ghost" id="whome">Back to Play</button>
+      </div>
+    </div>`;
+  $('#wagain').onclick=()=>showWriteTab();
+  $('#whome').onclick=()=>setTab('play');
+}
+
+/* ============================================================
+   NAV + INIT
+   ============================================================ */
+function setTab(t){
+  currentTab=t;
+  document.querySelectorAll('.navb').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  if(t==='play') showHome();
+  else if(t==='read') showReadTab();
+  else if(t==='write') showWriteTab();
+  else if(t==='me') BLAuth.showMe();
+}
+
+function mount(){
+  const nh=document.querySelector('#navhost');
+  nh.innerHTML=NAV;
+  nh.querySelectorAll('.navb').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+  showHome();
+}
+/* register with cloud sync: server max-merged progress replaces local */
+BLAuth.register('bunny-zh', {
+  get: ()=>S,
+  set(p, rerender){
+    S.coins = Math.max(S.coins, p.coins||0);
+    for(const k in (p.stars||{})) S.stars[k] = Math.max(S.stars[k]||0, p.stars[k]||0);
+    for(const k in (p.done||{})) if(p.done[k]) S.done[k] = true;
+    store.save(S); renderCoins();
+    if(rerender) showHome();
+  }
+});
+return {mount};
+})();
+
+/* ============================================================
+   SPANISH APP MODULE
+   ============================================================ */
+const ES = (()=>{
+const NAV = `<nav class="nav">
+  <button class="navb" data-hub><span>🏠</span>Home</button>
+  <button class="navb on" data-tab="play"><span>🎮</span>Play</button>
+  <button class="navb" data-tab="cards"><span>🃏</span>Cards</button>
+  <button class="navb" data-tab="write"><span>✍️</span>Write</button>
+  <button class="navb" data-tab="me"><span>👤</span>Me</button>
+</nav>`;
+/* ============================================================
+   LEARNING CONTENT — edit this file to add units/chapters.
+   Each set = one chapter card. Each term = { es, en }.
+   Tip: in Quizlet open the set → ⋯ → Export → copy the text
+   (term TAB definition, one per line) and convert it here.
+   ============================================================ */
+const SETS = [
+  {
+    id: 'u1t1',
+    badge: "Unit 1 \u00b7 Tema 1",
+    title: "El agua y la sequía",
+    sub: "Water, drought and rivers",
+    em: '💧',
+    sample: false,
+    terms: [
+      { es: "sequía", en: "drought" },
+      { es: "lluvia", en: "rain" },
+      { es: "sequedad", en: "dryness" },
+      { es: "escasez", en: "shortage" },
+      { es: "nube", en: "cloud" },
+      { es: "río", en: "river" },
+      { es: "pantano", en: "swamp" },
+      { es: "estanque", en: "pond" }
+    ],
+  },
+  {
+    id: 'u1t2',
+    badge: "Unit 1 \u00b7 Tema 2",
+    title: "El campo",
+    sub: "Countryside and agriculture",
+    em: '🌾',
+    sample: false,
+    terms: [
+      { es: "campo", en: "countryside" },
+      { es: "agricultura", en: "agriculture" },
+      { es: "ganadería", en: "cattle raising" },
+      { es: "cosecha", en: "harvest" },
+      { es: "cárnico", en: "meaty" }
+    ],
+  },
+  {
+    id: 'u1t3',
+    badge: "Unit 1 \u00b7 Tema 3",
+    title: "El agua en casa",
+    sub: "Using water at home",
+    em: '🚿',
+    sample: false,
+    terms: [
+      { es: "lavarse", en: "to wash oneself" },
+      { es: "grifo", en: "tap, faucet" },
+      { es: "cepillarse los dientes", en: "to brush one's teeth" },
+      { es: "cisternas", en: "tanks" },
+      { es: "mojar", en: "to get wet" },
+      { es: "lavavajillas", en: "dishwasher" }
+    ],
+  },
+  {
+    id: 'u1t4',
+    badge: "Unit 1 \u00b7 Tema 4",
+    title: "Palabras con H",
+    sub: "Words with hie- and hue-",
+    em: '✏️',
+    sample: false,
+    terms: [
+      { es: "hielo", en: "ice" },
+      { es: "hiedra", en: "ivy (plant)" },
+      { es: "huerto", en: "orchard" },
+      { es: "huella", en: "footprint" },
+      { es: "hiena", en: "hyena" },
+      { es: "hierro", en: "iron" },
+      { es: "hueso", en: "bone" }
+    ],
+  },
+  {
+    id: 'u2',
+    badge: 'Unit 2',
+    title: 'Comunidad ZOOM · Unit 2',
+    sub: 'Year 4 Spanish vocabulary',
+    em: '🌍',
+    sample: false,
+    terms: [
+      { es: 'hormiga', en: 'ant' },
+      { es: 'archipiélago', en: 'archipelago / group of islands' },
+      { es: 'árido', en: 'arid' },
+      { es: 'brújula', en: 'compass' },
+      { es: 'constelación', en: 'constellation / group of stars' },
+      { es: 'continentes', en: 'continents' },
+      { es: 'maizal', en: 'cornfield' },
+      { es: 'desierto', en: 'desert' },
+      { es: 'ecosistema', en: 'ecosystem' },
+      { es: 'flota', en: 'fleet of ships' },
+      { es: 'rebaño', en: 'flock / herd of sheep' },
+      { es: 'bandada', en: 'flock of birds' },
+      { es: 'flora y fauna', en: 'flora and fauna' },
+      { es: 'gélidas', en: 'freezing / gelid' },
+      { es: 'arboleda', en: 'grove / group of trees' },
+      { es: 'piara', en: 'herd of pigs' },
+      { es: 'manada', en: 'herd / pack of animals' },
+      { es: 'insular', en: 'insular / island-related' },
+      { es: 'islas', en: 'islands' },
+      { es: 'canguros', en: 'kangaroos' },
+      { es: 'pulmones', en: 'lungs' },
+      { es: 'suricata', en: 'meerkat' },
+      { es: 'cordillera', en: 'mountain range' },
+      { es: 'polo norte', en: 'North Pole' },
+      { es: 'océano', en: 'ocean' },
+      { es: 'orquesta', en: 'orchestra' },
+      { es: 'jauría', en: 'pack of dogs / hounds' },
+      { es: 'pingüinos', en: 'penguins' },
+      { es: 'península', en: 'peninsula' },
+      { es: 'peninsular', en: 'peninsular' },
+      { es: 'planeta', en: 'planet' },
+      { es: 'poblado', en: 'populated' },
+      { es: 'puerto', en: 'port / harbor' },
+      { es: 'conejo', en: 'rabbit' },
+      { es: 'marineros', en: 'sailors' },
+      { es: 'sabana', en: 'savanna' },
+      { es: 'esqueleto', en: 'skeleton' },
+      { es: 'polo sur', en: 'South Pole' },
+      { es: 'pedregal', en: 'stony ground / area full of rocks' },
+      { es: 'enjambre', en: 'swarm of bees' },
+      { es: 'vajilla', en: 'tableware / set of dishes' },
+      { es: 'templado', en: 'temperate / mild' },
+      { es: 'despoblado', en: 'uninhabited / unpopulated' },
+      { es: 'extenso', en: 'vast / extensive' },
+      { es: 'cálido', en: 'warm / hot' },
+    ],
+  },
+];
+
+
+/* ============================================================
+   BUNNY MASCOT (original SVG)
+   ============================================================ */
+function bunny(mood){ // happy | cheer | think
+  const eye = mood==='cheer' ? '<path d="M40 50 q5 -6 10 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M70 50 q5 -6 10 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="45" cy="52" r="4.5" fill="#3B3024"/><circle cx="75" cy="52" r="4.5" fill="#3B3024"/>';
+  const mouth = mood==='think' ? '<circle cx="60" cy="64" r="3" fill="#3B3024"/>'
+    : '<path d="M53 62 q7 8 14 0" stroke="#3B3024" stroke-width="3" fill="none" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="42" cy="26" rx="11" ry="22" fill="#FBE3EC" stroke="#3B3024" stroke-width="3"/>
+    <ellipse cx="78" cy="26" rx="11" ry="22" fill="#FBE3EC" stroke="#3B3024" stroke-width="3"/>
+    <ellipse cx="42" cy="28" rx="5" ry="13" fill="#F7B8CE"/>
+    <ellipse cx="78" cy="28" rx="5" ry="13" fill="#F7B8CE"/>
+    <circle cx="60" cy="62" r="34" fill="#FCEAF1" stroke="#3B3024" stroke-width="3"/>
+    <circle cx="44" cy="66" r="6" fill="#F7B8CE" opacity=".8"/>
+    <circle cx="76" cy="66" r="6" fill="#F7B8CE" opacity=".8"/>
+    ${eye}
+    <path d="M57 57 l6 0 -3 4 z" fill="#E88AA8"/>
+    ${mouth}
+  </svg>`;
+}
+
+/* ============================================================
+   STATE + PERSISTENCE
+   ============================================================ */
+const store = {
+  load(){ try{ return JSON.parse(localStorage.getItem('bunny-es')||'{}'); }catch(e){ return {}; } },
+  save(s){ try{ localStorage.setItem('bunny-es', JSON.stringify(s)); }catch(e){} }
+};
+let S = Object.assign({coins:0, stars:{}, done:{}}, store.load());
+function persist(){ store.save(S); if(window.BLSync) BLSync.push('bunny-es'); }
+function starsOf(id){ return S.stars[id]||0; }
+function addStars(id,n){ if(n>starsOf(id)){ S.stars[id]=n; persist(); } }
+function addCoins(n){ S.coins+=n; persist(); renderCoins(); }
+
+/* ============================================================
+   TEXT-TO-SPEECH — Spanish (es-ES first, then any es-*)
+   ============================================================ */
+let esVoice = null;
+function pickVoice(){
+  const vs = speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang));
+  esVoice = vs.find(v=>/es[-_]ES/i.test(v.lang)) || vs[0] || null;
+}
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text, rate){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = esVoice ? esVoice.lang : 'es-ES';
+  if(esVoice) u.voice = esVoice;
+  u.rate = rate || 0.9;
+  speechSynthesis.speak(u);
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = s=>document.querySelector(s);
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function sample(a,n,ex){ return shuffle(a.filter(x=>x!==ex)).slice(0,n); }
+function starRow(n){ let h=''; for(let i=0;i<3;i++) h+= i<n ? '★' : '<span class="off">★</span>'; return h; }
+function confetti(){
+  const box=$('#confetti'); const colors=['#FF7A6B','#FFC43C','#46C9A0','#5BA9F0','#A87BE6','#FF9ECF'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('i'); c.className='conf';
+    c.style.left=Math.random()*100+'vw'; c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(2.2+Math.random()*1.6)+'s'; c.style.animationDelay=(Math.random()*0.5)+'s';
+    box.appendChild(c); setTimeout(()=>c.remove(),4200);
+  }
+}
+
+/* lessons generated for every set */
+function lessonsOf(set){
+  return [
+    {id:set.id+'_cards',  ic:'🃏', nm:'Flashcards', ds:'Flip and listen', kind:'cards'},
+    {id:set.id+'_es2en',  ic:'💬', nm:'Español → English', ds:'What does it mean?', kind:'quiz', qtype:'es2en'},
+    {id:set.id+'_en2es',  ic:'🎯', nm:'English → Español', ds:'Pick the Spanish word', kind:'quiz', qtype:'en2es'},
+    {id:set.id+'_listen', ic:'🔊', nm:'Listen & Choose', ds:'Hear it, then find it', kind:'quiz', qtype:'listen'},
+  ];
+}
+
+/* ============================================================
+   QUIZ BUILDER
+   ============================================================ */
+function buildQuestions(set, qtype){
+  const items=shuffle(set.terms).slice(0, Math.min(8, set.terms.length));
+  return items.map(t=>{
+    const others=sample(set.terms,3,t);
+    if(qtype==='es2en')
+      return {ask:`What does <span class="es">${t.es}</span> mean?`, speak:t.es,
+        opts:shuffle([t,...others]).map(o=>({label:o.en, ok:o===t}))};
+    if(qtype==='en2es')
+      return {ask:`How do you say “${t.en}” in Spanish?`, speak:t.en,
+        opts:shuffle([t,...others]).map(o=>({label:o.es, es:1, ok:o===t}))};
+    return {ask:'🔊 Listen and tap the word you hear', speak:t.es, autoSpeak:1,
+      opts:shuffle([t,...others]).map(o=>({label:o.es, es:1, ok:o===t}))};
+  });
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+const app=$('#app');
+function renderCoins(){ const c=$('.coins b'); if(c) c.textContent=S.coins; }
+function header(){
+  return `<div class="top">
+    <button class="back" data-hub style="width:42px;height:42px;font-size:18px">🏠</button>
+    <div class="wm">Bunny Spanish<small>juega y aprende español · Year 4</small></div>
+    <div class="coins">🪙 <b>${S.coins}</b></div>
+  </div>`;
+}
+
+function showHome(){
+  const hellos=['¡Hola! What do you want to practise today?','¡Vamos! Pick a unit to begin 🐰','Ready to review your Spanish? 💪'];
+  app.innerHTML = header() + `
+  <div class="screen on">
+    <div class="hello"><div class="bun">${bunny('happy')}</div><div class="bubble">${hellos[Math.floor(Math.random()*hellos.length)]}</div></div>
+    ${SETS.some(s=>s.sample)?'<div class="note">⚠️ Sample words loaded — send me your Quizlet export (⋯ → Export) and I’ll drop in the real Unit 2 list.</div>':''}
+    <div class="grid">
+      ${SETS.map((st,i)=>{
+        const ls=lessonsOf(st), tot=ls.length*3, got=ls.reduce((a,l)=>a+starsOf(l.id),0);
+        return `<button class="chap ${['s1','s2','s3'][i%3]}" data-s="${i}">
+          <span class="badge">${st.badge}</span>
+          <h2>${st.title}</h2>
+          <p>${st.sub} · ${st.terms.length} words</p>
+          <div class="stars">⭐ ${got} / ${tot}</div>
+          <div class="em">${st.em||'🇪🇸'}</div>
+        </button>`;}).join('')}
+    </div>
+    <div class="hint">Tap a unit to start ✨</div>
+  </div>`;
+  app.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>showSet(+b.dataset.s));
+}
+
+function showSet(si){
+  const st=SETS[si];
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar"><button class="back" id="bk">←</button><div class="htitle">${st.title}<span class="sub">${st.terms.length} words</span></div></div>
+    <div class="levels">
+      ${lessonsOf(st).map(l=>`<button class="lvl" data-l="${l.id}">
+        <div class="ic">${l.ic}</div><div class="nm">${l.nm}</div><div class="ds">${l.ds}</div>
+        <div class="ss">${starRow(starsOf(l.id))}</div>
+      </button>`).join('')}
+    </div>
+  </div>`;
+  $('#bk').onclick=showHome;
+  app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{
+    const l=lessonsOf(st).find(x=>x.id===b.dataset.l);
+    l.kind==='cards' ? showFlashcards(st,l,si) : startQuiz(st,l,si);
+  });
+}
+
+/* ---------- flashcards ---------- */
+let F=null;
+function showFlashcards(st,l,si,inTab){
+  F={set:st, i:0, flip:false};
+  renderCard(l,si,inTab);
+}
+function renderCard(l,si,inTab){
+  const t=F.set.terms[F.i];
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar">${inTab?'':'<button class="back" id="bk">←</button>'}<div class="htitle">Flashcards<span class="sub">${F.set.title}</span></div></div>
+    <div class="tip">💡 Tap the card to flip it. Listen first, then check the meaning!</div>
+    <div class="fcard" id="fc">
+      <div class="side">${F.flip?'English':'Español'} · ${F.i+1} / ${F.set.terms.length}</div>
+      <div class="${F.flip?'back':'front'}">${F.flip?t.en:t.es}</div>
+      <button class="spk" id="spk">🔊 Listen</button>
+    </div>
+    <div class="fdots">${F.set.terms.map((_,i)=>`<i class="${i===F.i?'on':''}"></i>`).join('')}</div>
+    <div class="fnav">
+      <button class="btn ghost" id="prev">← Prev</button>
+      <button class="btn play" id="nextc">Next →</button>
+    </div>
+    ${inTab?'':`<button class="btn go" id="got" style="margin-top:12px">Got it! ✨</button>`}
+  </div>`;
+  $('#fc').onclick=e=>{ if(e.target.closest('#spk')) return; F.flip=!F.flip; renderCard(l,si,inTab); };
+  $('#spk').onclick=()=>speak(F.flip?t.en:t.es);
+  $('#prev').onclick=()=>{ F.i=(F.i-1+F.set.terms.length)%F.set.terms.length; F.flip=false; renderCard(l,si,inTab); };
+  $('#nextc').onclick=()=>{ F.i=(F.i+1)%F.set.terms.length; F.flip=false; renderCard(l,si,inTab); };
+  if(!inTab){
+    $('#bk').onclick=()=>showSet(si);
+    $('#got').onclick=()=>{ if(!S.done[l.id]){ S.done[l.id]=1; addCoins(15); } addStars(l.id,3); showSet(si); };
+  }
+  setTimeout(()=>{ if(!F.flip) speak(t.es); },300);
+}
+
+/* ---------- quiz ---------- */
+let Q=null;
+function startQuiz(st,l,si){
+  Q={set:st,l,si,qs:buildQuestions(st,l.qtype),i:0,first:0};
+  renderQ();
+}
+function renderQ(){
+  const q=Q.qs[Q.i];
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar"><button class="back" id="bk">←</button><div class="htitle">${Q.l.nm}</div></div>
+    <div class="prog"><i style="width:${(Q.i/Q.qs.length)*100}%"></i></div>
+    <div class="qcard">
+      <div class="qask">${q.ask}</div>
+      ${q.speak&&q.autoSpeak?`<button class="spk" id="spk">🔊 Listen again</button>`:''}
+      <div class="opts ${q.opts.length===4?'two':''}">
+        ${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.label}</button>`).join('')}
+      </div>
+      <div class="feedrow" id="feed" style="display:none"></div>
+      <button class="next" id="next" style="display:none">${Q.i===Q.qs.length-1?'See results 🏁':'Next →'}</button>
+    </div>
+  </div>`;
+  $('#bk').onclick=()=>showSet(Q.si);
+  if(q.autoSpeak){ $('#spk').onclick=()=>speak(q.speak); setTimeout(()=>speak(q.speak),350); }
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.i));
+  $('#next').onclick=()=>{ Q.i++; Q.i<Q.qs.length ? renderQ() : showResult(); };
+}
+function answer(i){
+  const q=Q.qs[Q.i];
+  app.querySelectorAll('.opt').forEach((b,bi)=>{
+    b.disabled=true;
+    if(q.opts[bi].ok) b.classList.add('right');
+    else if(bi===i) b.classList.add('wrong');
+  });
+  const good=q.opts[i].ok;
+  if(good){ Q.first++; addCoins(10); }
+  const feed=$('#feed');
+  feed.style.display='flex'; feed.className='feedrow '+(good?'good':'bad');
+  feed.innerHTML = good
+    ? `<div class="bun sm">${bunny('cheer')}</div> ¡Muy bien! +10 🪙`
+    : `<div class="bun sm">${bunny('think')}</div> Not quite — the answer is highlighted.`;
+  $('#next').style.display='block';
+  if(good && q.opts[i].es) speak(q.opts[i].label);
+}
+function showResult(){
+  const n=Q.qs.length, c=Q.first, pct=c/n;
+  const st = pct===1?3 : pct>=0.7?2 : pct>=0.4?1 : 0;
+  addStars(Q.l.id, st);
+  if(st>=2) confetti();
+  const msgs=['Keep practising — you’ll get there! 💪','¡Buen trabajo! One more try? 🌱','Great work! Almost perfect! 🌟','¡Perfecto! You’re a star! 🏆'];
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="result">
+      <div class="bun" style="margin:0 auto">${bunny(st>=2?'cheer':'think')}</div>
+      <div class="bigstars">${'★'.repeat(st)}${'☆'.repeat(3-st)}</div>
+      <h2>${msgs[st]}</h2>
+      <div class="sc">You answered ${c} of ${n} correctly on the first try</div>
+      <div class="rbtns">
+        <button class="btn play" id="again">Play again 🔁</button>
+        <button class="btn ghost" id="back">Back to unit</button>
+      </div>
+    </div>
+  </div>`;
+  $('#again').onclick=()=>startQuiz(Q.set,Q.l,Q.si);
+  $('#back').onclick=()=>showSet(Q.si);
+}
+
+/* ---------- write tab (spelling trainer with accent pad) ---------- */
+let W=null;
+function showWriteTab(){
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar"><div class="htitle">Write<span class="sub">spelling practice</span></div></div>
+    <div class="chiprow" id="sets">
+      ${SETS.map((s,i)=>`<button class="chip ${i===0?'on':''}" data-s="${i}">${s.em||'🇪🇸'} ${s.badge}</button>`).join('')}
+    </div>
+    <div id="wbox"></div>
+  </div>`;
+  app.querySelectorAll('#sets .chip').forEach(c=>c.onclick=()=>{
+    app.querySelectorAll('#sets .chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on'); startWrite(SETS[+c.dataset.s]);
+  });
+  startWrite(SETS[0]);
+}
+function startWrite(st){
+  W={set:st, items:shuffle(st.terms).slice(0,12), i:0, ok:0, answered:false};
+  renderW();
+}
+function renderW(){
+  const it=W.items[W.i];
+  $('#wbox').innerHTML = `
+    <div class="qcard">
+      <div class="prog" style="margin-bottom:14px"><i style="width:${(W.i/W.items.length)*100}%"></i></div>
+      <div class="wmean">“${it.en}”</div>
+      <div style="text-align:center"><button class="spk" id="wspk">🔊 Listen</button></div>
+      <input class="winput" id="win" placeholder="escribe aquí…" autocomplete="off" autocapitalize="off" autocorrect="off" />
+      <div class="accents">${['á','é','í','ó','ú','ü','ñ','¿','¡'].map(a=>`<button class="acc" data-a="${a}">${a}</button>`).join('')}</div>
+      <div class="wfeed" id="wfeed"></div>
+      <div class="wans" id="wans"></div>
+      <div class="rbtns" style="margin-top:14px">
+        <button class="btn play" id="wcheck">Check ✅</button>
+        <button class="btn ghost" id="wshow">Show answer</button>
+      </div>
+    </div>`;
+  const inp=$('#win');
+  $('#wspk').onclick=()=>speak(it.es);
+  setTimeout(()=>speak(it.es),350);
+  app.querySelectorAll('.acc').forEach(b=>b.onclick=()=>{
+    const s=inp.selectionStart||inp.value.length, e=inp.selectionEnd||s;
+    inp.value=inp.value.slice(0,s)+b.dataset.a+inp.value.slice(e);
+    inp.focus(); inp.setSelectionRange(s+1,s+1);
+  });
+  const norm=v=>v.trim().toLowerCase().replace(/\s+/g,' ');
+  const check=reveal=>{
+    if(W.answered) return;
+    const v=norm(inp.value);
+    if(!v && !reveal){ inp.focus(); return; }
+    W.answered=true;
+    const good = v===norm(it.es);
+    if(good){ W.ok++; addCoins(10); }
+    const feed=$('#wfeed');
+    feed.className='wfeed '+(good?'good':'bad');
+    feed.textContent = good ? '¡Perfecto! +10 🪙' : (reveal ? 'Here is the answer:' : 'Not quite — compare carefully:');
+    $('#wans').innerHTML = good ? `<span class="ok">${it.es}</span>`
+      : it.es.split('').map((c,k)=> inp.value.trim()[k]===c ? `<span class="ok">${c}</span>` : `<span class="no">${c}</span>`).join('');
+    $('#wcheck').textContent = W.i===W.items.length-1 ? 'Finish 🏁' : 'Next →';
+    $('#wcheck').onclick=nextW;
+    inp.disabled=true;
+  };
+  $('#wcheck').onclick=()=>check(false);
+  $('#wshow').onclick=()=>check(true);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ W.answered ? nextW() : check(false); } });
+  inp.focus();
+}
+function nextW(){
+  W.i++; W.answered=false;
+  if(W.i<W.items.length){ renderW(); return; }
+  const pct=W.ok/W.items.length;
+  if(pct>=0.7) confetti();
+  $('#wbox').innerHTML = `
+    <div class="result">
+      <div class="bun" style="margin:0 auto">${bunny(pct>=0.7?'cheer':'think')}</div>
+      <div class="bigstars">${pct===1?'★★★':pct>=0.7?'★★☆':pct>=0.4?'★☆☆':'☆☆☆'}</div>
+      <h2>${pct===1?'¡Sin errores! 🏆':pct>=0.7?'Well done! 🌟':'Keep practising! 💪'}</h2>
+      <div class="sc">You wrote ${W.ok} of ${W.items.length} correctly</div>
+      <div class="rbtns">
+        <button class="btn play" id="wagain">Practise again 🔁</button>
+        <button class="btn ghost" id="whome">Back to Play</button>
+      </div>
+    </div>`;
+  $('#wagain').onclick=()=>showWriteTab();
+  $('#whome').onclick=()=>setTab('play');
+}
+
+/* ============================================================
+   NAV + INIT
+   ============================================================ */
+function setTab(t){
+  document.querySelectorAll('.navb').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  if(t==='play') showHome();
+  else if(t==='cards') showFlashcards(SETS[0],null,0,true);
+  else if(t==='write') showWriteTab();
+  else if(t==='me') BLAuth.showMe();
+}
+
+function mount(){
+  const nh=document.querySelector('#navhost');
+  nh.innerHTML=NAV;
+  nh.querySelectorAll('.navb').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+  showHome();
+}
+/* register with cloud sync: server max-merged progress replaces local */
+BLAuth.register('bunny-es', {
+  get: ()=>S,
+  set(p, rerender){
+    S.coins = Math.max(S.coins, p.coins||0);
+    for(const k in (p.stars||{})) S.stars[k] = Math.max(S.stars[k]||0, p.stars[k]||0);
+    for(const k in (p.done||{})) if(p.done[k]) S.done[k] = true;
+    store.save(S); renderCoins();
+    if(rerender) showHome();
+  }
+});
+return {mount};
+})();
+
+/* ============================================================
+   HUB + ROUTER
+   ============================================================ */
+function renderHub(){
+  document.querySelector('#navhost').innerHTML='';
+  document.querySelector('#app').innerHTML=`
+  <div class="hubwrap">
+    <div class="hubbrand">
+      <div class="bun" style="margin:0 auto">${bunny('happy')}</div>
+      <h1>Bunny Learning</h1>
+      <p>pick a language and hop in! 🐰</p>
+    </div>
+    <button class="hubcard hzh" onclick="location.hash='#/chinese'">
+      <span class="badge">Grade 4 · Dictation</span>
+      <h2>Bunny Chinese 中文</h2>
+      <p>Vocabulary, passage &amp; idioms — with pinyin and Mandarin audio</p>
+      <div class="em">🖌️</div>
+    </button>
+    <button class="hubcard hes" onclick="location.hash='#/spanish'">
+      <span class="badge">Year 4 · Comunidad ZOOM</span>
+      <h2>Bunny Spanish 🇪🇸</h2>
+      <p>Flashcards, quizzes &amp; spelling — unit vocabulary</p>
+      <div class="em">🃏</div>
+    </button>
+  </div>`;
+}
+function route(){
+  const h=location.hash;
+  if(h.startsWith('#/chinese')) ZH.mount();
+  else if(h.startsWith('#/spanish')) ES.mount();
+  else if(h.startsWith('#/me')){ renderHub(); BLAuth.showMe(); }
+  else if(BLAuth.shouldGate()) BLAuth.showLanding();
+  else renderHub();
+}
+window.addEventListener('hashchange', route);
+route();
+
+if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

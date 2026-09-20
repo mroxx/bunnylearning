@@ -1,0 +1,5 @@
+# Bunny Learning — Apache hardening
+# Never serve configuration, lock or SQL files.
+<FilesMatch "^(config\.php|config\.sample\.php|install\.lock|schema\.sql)$">
+    Require all denied
+</FilesMatch>

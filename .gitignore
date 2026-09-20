@@ -1,0 +1,5 @@
+# secrets & local install state — never commit
+config.php
+install.lock
+.DS_Store
+Thumbs.db
