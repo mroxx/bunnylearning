@@ -258,6 +258,18 @@
   .s1{background:linear-gradient(135deg,var(--blue),var(--grape))}
   .s2{background:linear-gradient(135deg,var(--mint),#7BD46B)}
   .s3{background:linear-gradient(135deg,var(--coral),var(--sun))}
+  .s4{background:linear-gradient(135deg,var(--pink),var(--grape))}
+
+  /* reading chapter */
+  .reades{background:#FFFDF6;border:3px dashed var(--sun);border-radius:22px;padding:18px 16px;box-shadow:var(--shadow)}
+  .reades .rtitle{font-family:var(--display);font-weight:700;font-size:26px;text-align:center;margin:2px 0 14px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .reades .rsec{margin-bottom:16px}
+  .reades .rsec:last-child{margin-bottom:2px}
+  .reades h3{font-family:var(--display);font-weight:700;font-size:20px;color:var(--blue-d);margin:0 0 6px;display:flex;align-items:center}
+  .reades p{font-weight:700;font-size:16px;line-height:1.75;margin:0 0 10px}
+  .reades p:last-child{margin-bottom:0}
+  .reades .rintro{font-size:16.5px;background:#fff;border:2.5px solid var(--line);border-radius:16px;padding:12px 14px}
+  .qask .qsub{font-family:var(--body);font-weight:900;font-size:14px;color:var(--ink-soft);margin-top:8px}
 
   .bar{display:flex;align-items:center;gap:12px;margin:2px 2px 18px}
   .back{width:46px;height:46px;border-radius:16px;border:3px solid var(--line);background:#fff;cursor:pointer;
@@ -1420,6 +1432,67 @@ const SETS = [
       { es: 'cálido', en: 'warm / hot' },
     ],
   },
+  {
+    id: 'u2cont',
+    badge: 'Unit 2 · Lectura',
+    title: 'Los continentes',
+    sub: 'Read about the six continents',
+    em: '🗺️',
+    cls: 's4',
+    sample: false,
+    kind: 'reading',
+    text: [
+      { h: '', p: 'La masa de tierra que se levanta por encima del agua de los océanos forma los continentes, en los que vivimos los seres humanos. Estos son seis: Europa, América, Asia, África, Oceanía y la Antártida.' },
+      { h: 'América', p: 'Es el continente más largo, se extiende casi desde el Polo Norte al Polo Sur. Allí se encuentra la selva del Amazonas, que es uno de los principales pulmones del planeta Tierra.\n\nLas lenguas que se hablan en el continente americano lo dividen en dos: la América anglosajona, en la que se habla inglés, formada por los Estados Unidos de América y Canadá; y la América latina, en la que se habla español y portugués, formada por el resto de países, como por ejemplo, México, Venezuela, Colombia, Argentina o Brasil.' },
+      { h: 'Europa', p: 'Este continente es una península, es decir, está rodeado de agua por todas partes menos por una.\n\nEn Europa destaca el mar Caspio, que, aunque se llama "mar", es un lago de agua salada y está considerado el lago más grande del mundo.\n\nEl clima es por lo general templado, aunque hay grandes diferencias entre el frío norte y el cálido sur.\n\nEn Europa se hablan más de cien lenguas diferentes, entre las que se encuentran el castellano, el catalán, el vasco o el gallego, presentes en el territorio español.' },
+      { h: 'África', p: 'Es el continente más cálido de la Tierra. Se cree que el primer ser humano del planeta, el primer Homo sapiens, nació en África. Desde allí se expandió al resto de los territorios.\n\nEn el continente africano hay nueve desiertos, pero su principal ecosistema es la sabana, que tiene un clima árido y seco, y muy poca vegetación. Allí es donde viven los leones, las jirafas o los suricatas, entre otros animales.\n\nEn África se hablan unas 2000 lenguas, entre ellas, el árabe, el suajili o el yoruba.' },
+      { h: 'Antártida', p: 'Es el continente más frío del planeta, con aguas gélidas, muy pocas lluvias y mucho viento. En la Antártida no vive gente de forma permanente y los animales y las plantas son escasos, a excepción de los pingüinos.' },
+      { h: 'Asia', p: 'Es el continente más extenso y poblado del planeta. En algunos de sus países, como China o India, viven más de mil millones de personas.\n\nEn Asia está la cordillera más alta del mundo, el Himalaya. Muchas personas anualmente lo visitan y disfrutan de tan maravilloso viaje.\n\nExisten más de cuarenta lenguas oficiales en Asia: el mandarín, el urdu o el hindi son algunas de ellas.' },
+      { h: 'Oceanía', p: 'Es el menor de los continentes y está formado por muchas islas.\n\nLa flora y la fauna de este continente son muy especiales. Australia, por ejemplo, tiene vegetación y animales que no se pueden encontrar en ningún otro lugar del mundo: kiwis, canguros, más de 1500 especies de arañas, 6000 de moscas y 4000 de hormigas.\n\nSe hablan muchas lenguas, pero las más habladas son el inglés, el tok pisin, el francés y el hindi de Fiyi.' },
+    ],
+    questions: [
+      { q: '¿Cuántos continentes hay?', a: 'Seis', opts: ['Cuatro', 'Cinco', 'Seis', 'Siete'] },
+      { q: '¿Cuál es el continente más largo?', a: 'América', opts: ['Europa', 'África', 'América', 'Oceanía'] },
+      { q: '¿Dónde se encuentra la selva del Amazonas?', a: 'En América', opts: ['En África', 'En Asia', 'En América', 'En Europa'] },
+      { q: '¿Qué es el mar Caspio?', a: 'Un lago de agua salada', opts: ['Un océano', 'Un río muy largo', 'Un lago de agua salada', 'Un desierto'] },
+      { q: '¿Cuál es el continente más cálido de la Tierra?', a: 'África', opts: ['Oceanía', 'África', 'Asia', 'América'] },
+      { q: '¿Dónde viven los pingüinos?', a: 'En la Antártida', opts: ['En Europa', 'En Asia', 'En la Antártida', 'En Oceanía'] },
+      { q: '¿Cuál es la cordillera más alta del mundo?', a: 'El Himalaya', opts: ['Los Andes', 'Los Alpes', 'El Himalaya', 'Los Pirineos'] },
+      { q: '¿Cuál es el menor de los continentes?', a: 'Oceanía', opts: ['Europa', 'Oceanía', 'África', 'Asia'] },
+    ],
+    truefalse: [
+      { s: 'Europa es una península.', ok: true },
+      { s: 'En la Antártida vive mucha gente de forma permanente.', ok: false },
+      { s: 'En el continente africano hay nueve desiertos.', ok: true },
+      { s: 'En Asia existen más de cuarenta lenguas oficiales.', ok: true },
+      { s: 'Oceanía está formado por muchas islas.', ok: true },
+      { s: 'En América latina se habla español y portugués.', ok: true },
+      { s: 'El mar Caspio es un océano.', ok: false },
+      { s: 'En Australia hay canguros y kiwis.', ok: true },
+    ],
+    match: [
+      { d: 'Es el continente más frío del planeta.', a: 'La Antártida' },
+      { d: 'Es el continente más extenso y poblado.', a: 'Asia' },
+      { d: 'Es el continente más cálido de la Tierra.', a: 'África' },
+      { d: 'Es el menor de los continentes y está formado por muchas islas.', a: 'Oceanía' },
+      { d: 'Es una península: está rodeado de agua por todas partes menos por una.', a: 'Europa' },
+      { d: 'Se extiende casi desde el Polo Norte al Polo Sur.', a: 'América' },
+    ],
+    terms: [
+      { es: 'el continente', en: 'the continent' },
+      { es: 'el océano', en: 'the ocean' },
+      { es: 'la península', en: 'the peninsula' },
+      { es: 'la selva', en: 'the rainforest' },
+      { es: 'el desierto', en: 'the desert' },
+      { es: 'la sabana', en: 'the savanna' },
+      { es: 'la cordillera', en: 'the mountain range' },
+      { es: 'la isla', en: 'the island' },
+      { es: 'la lengua', en: 'the language' },
+      { es: 'el clima', en: 'the climate' },
+      { es: 'el pingüino', en: 'the penguin' },
+      { es: 'la jirafa', en: 'the giraffe' },
+    ],
+  },
 ];
 
 
@@ -1496,6 +1569,16 @@ function confetti(){
 
 /* lessons generated for every set */
 function lessonsOf(set){
+  if(set.kind==='reading'){
+    return [
+      {id:set.id+'_read',   ic:'📖', nm:'Lee el texto', ds:'Read and listen to the text', kind:'read'},
+      {id:set.id+'_comp',   ic:'🧩', nm:'Comprensión', ds:'Preguntas sobre el texto', kind:'quiz', qtype:'comp'},
+      {id:set.id+'_vf',     ic:'✅', nm:'¿Verdadero o falso?', ds:'Decide si es verdad o mentira', kind:'quiz', qtype:'vf'},
+      {id:set.id+'_cont',   ic:'🌍', nm:'¿Qué continente es?', ds:'Adivina el continente', kind:'quiz', qtype:'cont'},
+      {id:set.id+'_cards',  ic:'🃏', nm:'Flashcards', ds:'Palabras importantes', kind:'cards'},
+      {id:set.id+'_listen', ic:'🔊', nm:'Listen & Choose', ds:'Hear it, then find it', kind:'quiz', qtype:'listen'},
+    ];
+  }
   return [
     {id:set.id+'_cards',  ic:'🃏', nm:'Flashcards', ds:'Flip and listen', kind:'cards'},
     {id:set.id+'_es2en',  ic:'💬', nm:'Español → English', ds:'What does it mean?', kind:'quiz', qtype:'es2en'},
@@ -1508,6 +1591,15 @@ function lessonsOf(set){
    QUIZ BUILDER
    ============================================================ */
 function buildQuestions(set, qtype){
+  if(qtype==='comp')
+    return shuffle(set.questions).map(x=>({ask:`<span class="es">${x.q}</span>`, speak:x.q,
+      opts:shuffle(x.opts).map(o=>({label:o, es:1, ok:o===x.a}))}));
+  if(qtype==='vf')
+    return shuffle(set.truefalse).map(x=>({ask:`<span class="es">${x.s}</span>`, speak:x.s,
+      opts:[{label:'✅ Verdadero', ok:x.ok}, {label:'❌ Falso', ok:!x.ok}]}));
+  if(qtype==='cont')
+    return shuffle(set.match).map(x=>({ask:`<span class="es">«${x.d}»</span><div class="qsub">¿Qué continente es?</div>`, speak:x.d,
+      opts:shuffle(['América','Europa','África','Asia','Oceanía','La Antártida']).map(o=>({label:o, es:1, ok:o===x.a}))}));
   const items=shuffle(set.terms).slice(0, Math.min(8, set.terms.length));
   return items.map(t=>{
     const others=sample(set.terms,3,t);
@@ -1544,10 +1636,10 @@ function showHome(){
     <div class="grid">
       ${SETS.map((st,i)=>{
         const ls=lessonsOf(st), tot=ls.length*3, got=ls.reduce((a,l)=>a+starsOf(l.id),0);
-        return `<button class="chap ${['s1','s2','s3'][i%3]}" data-s="${i}">
+        return `<button class="chap ${st.cls||['s1','s2','s3'][i%3]}" data-s="${i}">
           <span class="badge">${st.badge}</span>
           <h2>${st.title}</h2>
-          <p>${st.sub} · ${st.terms.length} words</p>
+          <p>${st.sub} · ${st.kind==='reading'?'lectura + quizzes':st.terms.length+' words'}</p>
           <div class="stars">⭐ ${got} / ${tot}</div>
           <div class="em">${st.em||'🇪🇸'}</div>
         </button>`;}).join('')}
@@ -1561,7 +1653,7 @@ function showSet(si){
   const st=SETS[si];
   app.innerHTML = `
   <div class="screen on">
-    <div class="bar"><button class="back" id="bk">←</button><div class="htitle">${st.title}<span class="sub">${st.terms.length} words</span></div></div>
+    <div class="bar"><button class="back" id="bk">←</button><div class="htitle">${st.title}<span class="sub">${st.kind==='reading'?'lectura + quizzes':st.terms.length+' words'}</span></div></div>
     <div class="levels">
       ${lessonsOf(st).map(l=>`<button class="lvl" data-l="${l.id}">
         <div class="ic">${l.ic}</div><div class="nm">${l.nm}</div><div class="ds">${l.ds}</div>
@@ -1572,8 +1664,30 @@ function showSet(si){
   $('#bk').onclick=showHome;
   app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{
     const l=lessonsOf(st).find(x=>x.id===b.dataset.l);
-    l.kind==='cards' ? showFlashcards(st,l,si) : startQuiz(st,l,si);
+    if(l.kind==='cards') showFlashcards(st,l,si);
+    else if(l.kind==='read') showReading(st,l,si);
+    else startQuiz(st,l,si);
   });
+}
+
+/* ---------- reading chapter ---------- */
+function showReading(st,l,si){
+  app.innerHTML = `
+  <div class="screen on">
+    <div class="bar"><button class="back" id="bk">←</button><div class="htitle">${st.title}<span class="sub">lectura</span></div></div>
+    <div class="tip">💡 Lee el texto con atención y toca 🔊 para escuchar cada parte. ¡Después te esperan los quizzes!</div>
+    <div class="reades">
+      <div class="rtitle">🌍 Los continentes <button class="mini" id="sayall">🔊 todo</button></div>
+      ${st.text.map((t,i)=>t.h
+        ? `<section class="rsec"><h3><span>${t.h}</span><button class="mini" data-say="${i}">🔊</button></h3>${t.p.split(/\n\n+/).map(pp=>`<p>${pp.replace(/\n/g,'<br>')}</p>`).join('')}</section>`
+        : `<p class="rintro">${t.p.replace(/\n/g,'<br>')} <button class="mini" data-say="${i}">🔊</button></p>`).join('')}
+    </div>
+    <button class="btn go" id="got" style="margin-top:16px">¡Ya me lo sé! ✨</button>
+  </div>`;
+  $('#bk').onclick=()=>showSet(si);
+  $('#got').onclick=()=>{ if(!S.done[l.id]){ S.done[l.id]=1; addCoins(15); } addStars(l.id,3); showSet(si); };
+  $('#sayall').onclick=()=>speak('Los continentes. '+st.text.map(t=>(t.h?t.h+'. ':'')+t.p).join(' '), 0.92);
+  app.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>{ const t=st.text[+b.dataset.say]; speak((t.h?t.h+'. ':'')+t.p, 0.92); });
 }
 
 /* ---------- flashcards ---------- */

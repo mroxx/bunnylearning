@@ -1,6 +1,6 @@
 # 🐰 Bunny Learning — Complete Project Documentation
 
-**Last updated:** 2026-09-20 · **Latest preview version ID:** `bfe737b`
+**Last updated:** 2026-09-20 · **Latest preview version ID:** `4ab5c15`
 
 > ## 🧭 Where things live (pick up work from here)
 > - **Live app:** http://www.bunnylearning.net (PHP 8 + MySQL on kasserver/ALL-INKL)
@@ -64,7 +64,7 @@ Everything lives in **one** `index.html` with hash routing:
 - Write tab: dictation trainer with character-by-character feedback
 
 **Bunny Spanish** — bottom nav: 🏠 Home · 🎮 Play · 🃏 Cards · ✍️ Write
-- 5 sets (Unit 1: 4 temas, 26 words · Unit 2: 45 words)
+- 5 vocab sets (Unit 1: 4 temas, 26 words · Unit 2: 45 words) + 1 reading chapter (Los continentes 🗺️)
 - Lessons per set: 🃏 Flashcards · 💬 Español→English · 🎯 English→Español · 🔊 Listen & Choose
 - Write tab: spelling trainer with accent pad (á é í ó ú ü ñ ¿ ¡), 12 random words per round
 
@@ -159,6 +159,18 @@ English: "Sure enough, everyone's face was painted 'black'. Zhāng Zhìmíng's w
 | gélidas | freezing / gelid | peninsular | peninsular | cálido | warm / hot |
 | arboleda | grove / group of trees | planeta | planet | piara | herd of pigs |
 
+### 4.4 Spanish — Unit 2 · Lectura: Los continentes 🗺️ (reading chapter, from the Year-4 worksheet)
+
+A reading chapter (`kind: 'reading'`) instead of a pure vocab set. Contains:
+
+- **Full text** (`text[]`) — intro + 6 sections (América, Europa, África, Antártida, Asia, Oceanía), verbatim from the school worksheet; each section has its own 🔊 listen button plus a 🔊 todo button for the whole text.
+- **Comprensión** (`questions[]`) — 8 multiple-choice questions in Spanish (`{ q, a, opts[4] }`).
+- **¿Verdadero o falso?** (`truefalse[]`) — 8 statements (`{ s, ok }`).
+- **¿Qué continente es?** (`match[]`) — 6 descriptions → pick the continent (`{ d, a }`).
+- **Key vocabulary** (`terms[]`) — 12 words (el continente, el océano, la península, la selva, el desierto, la sabana, la cordillera, la isla, la lengua, el clima, el pingüino, la jirafa) powering Flashcards, Listen & Choose and the Write-tab chip.
+
+Lessons (auto from `lessonsOf`): 📖 Lee el texto · 🧩 Comprensión · ✅ ¿Verdadero o falso? · 🌍 ¿Qué continente es? · 🃏 Flashcards · 🔊 Listen & Choose — 18 stars total.
+
 ---
 
 ## 5. Design system
@@ -201,7 +213,7 @@ Voices depend on the device: iOS/macOS have good built-in Mandarin & Spanish voi
 
 - `manifest.webmanifest`: standalone display, portrait, bunny icons (192/512 + maskable)
 - `sw.js`: cache-first for the app shell, network fallback, offline fallback to `index.html`
-- **After every content/code edit:** bump the cache name (`bunny-learning-vN` → vN+1) or installed copies keep serving the old version. Current: **v5**
+- **After every content/code edit:** bump the cache name (`bunny-learning-vN` → vN+1) or installed copies keep serving the old version. Current: **v9**
 - Install on phone: open the app → browser menu → "Add to Home Screen"
 
 ---
@@ -228,6 +240,8 @@ In `index.html`, find the **ES module** and its `SETS` array. Add one object:
 ```
 
 Every set automatically gets: Flashcards, ES→EN, EN→ES, Listen & Choose + a Write-tab chip. Nothing else to change. Then bump `sw.js` cache and save a version.
+
+**Reading chapter variant** (like `u2cont` *Los continentes*): add `kind: 'reading'` plus `text[]` (intro + headed sections), `questions[]` (MCQ), `truefalse[]` and `match[]` — `lessonsOf` then emits 📖 reading view, 🧩 comprehension, ✅ true/false and 🌍 match quizzes instead of the ES↔EN quizzes. `terms[]` still powers flashcards/listen/write. Card colour can be pinned with `cls: 's4'`.
 
 **Getting terms out of Quizlet:** Quizlet blocks cloud browsers (captcha). Reliable path: open the set yourself → **⋯ → Export** → tab-separated → paste to me (or convert each line to `{ es: '…', en: '…' },`).
 
