@@ -26,9 +26,10 @@ db()->prepare('INSERT INTO users (id, username, username_lc, password_hash, role
              'learner', 'active']);
 
 $_SESSION['uid'] = $id;
+unset($_SESSION['csrf']);            /* rotate CSRF on privilege change */
 create_session_token($id);
 audit($id, 'register', $id);
 
 $st = db()->prepare('SELECT * FROM users WHERE id = ?');
 $st->execute([$id]);
-jsend(['ok' => true, 'user' => public_user($st->fetch())]);
+jsend(['ok' => true, 'user' => public_user($st->fetch()), 'csrf' => csrf_token()]);

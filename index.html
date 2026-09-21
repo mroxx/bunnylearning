@@ -556,17 +556,24 @@ async function mergeDialog(){
 /* ---------- auth actions ---------- */
 async function login(username, password){
   const d = await api('login.php','POST',{username,password});
-  if(d.ok){ st.user = d.user; mergeDialog(); }
+  if(d.ok){ st.user = d.user; if(d.csrf) st.csrf = d.csrf; mergeDialog(); }
   return d;
 }
 async function signup(username, password){
   const d = await api('register.php','POST',{username,password});
-  if(d.ok){ st.user = d.user; await syncAll(false); }
+  if(d.ok){ st.user = d.user; if(d.csrf) st.csrf = d.csrf; await syncAll(false); }
   return d;
 }
 async function logout(){
   await api('logout.php','POST',{});
-  st.user = null;
+  st.user = null; st.csrf = '';
+  /* logout destroys the server session — prime a fresh one so the next
+     login/signup POST has a valid CSRF token for the current session. */
+  try{
+    const r = await fetch('api/me.php');
+    const d = await r.json();
+    if(d.ok) st.csrf = d.csrf || '';
+  }catch(e){}
   showMe();
 }
 async function forgot(username){

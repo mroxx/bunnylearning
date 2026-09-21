@@ -31,8 +31,9 @@ if ($u['status'] !== 'active') {
 login_attempt($lc, true);
 db()->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([$u['id']]);
 $_SESSION['uid'] = $u['id'];
+unset($_SESSION['csrf']);            /* rotate CSRF on privilege change */
 create_session_token($u['id']);
 audit($u['id'], 'login', $u['id']);
 
 $u['last_login_at'] = date('Y-m-d H:i:s');
-jsend(['ok' => true, 'user' => public_user($u)]);
+jsend(['ok' => true, 'user' => public_user($u), 'csrf' => csrf_token()]);
