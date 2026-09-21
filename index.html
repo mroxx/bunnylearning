@@ -420,7 +420,12 @@ function confetti(){
   }
 }
 document.addEventListener('click', e=>{
-  if(e.target.closest('[data-hub]')) location.hash='';
+  if(e.target.closest('[data-hub]')){
+    /* setting hash to '' when it is already '' fires no hashchange —
+       re-route explicitly so Home always works (e.g. back from the Me screen) */
+    if(location.hash==='' || location.hash==='#') route();
+    else location.hash='';
+  }
 });
 
 /* ============================================================
