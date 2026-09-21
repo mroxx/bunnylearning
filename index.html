@@ -367,7 +367,9 @@
   @media(max-width:380px){ .qask{font-size:19px} .fcard .front{font-size:26px} }
 
 /* ============ hub ============ */
-.hubwrap{min-height:calc(100svh - 40px);display:flex;flex-direction:column;justify-content:center;max-width:480px;margin:0 auto}
+.hubwrap{min-height:calc(100svh - 40px);display:flex;flex-direction:column;justify-content:center;max-width:480px;margin:0 auto;padding-bottom:96px}
+@keyframes hubpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+.hubcard.pickme{animation:hubpulse .45s ease-in-out 3}
 .hubbrand{text-align:center;margin-bottom:22px}
 .hubbrand h1{font-family:var(--display);font-weight:700;font-size:34px;margin:10px 0 2px}
 .hubbrand p{font-weight:800;color:var(--ink-soft);margin:0;font-size:14px}
@@ -1926,8 +1928,44 @@ return {mount};
 /* ============================================================
    HUB + ROUTER
    ============================================================ */
+/* Nav shown on the hub: Home stays active; the section tabs reopen the
+   most recently used language app on that tab. If no app was used yet,
+   pulse the language cards so the user picks one first. */
+let pendingTab = null;
+
+function hubNavHTML(){
+  return `<nav class="nav">
+    <button class="navb on" data-hub><span>🏠</span>Home</button>
+    <button class="navb" data-hubtab="play"><span>🎮</span>Play</button>
+    <button class="navb" data-hubtab="cards"><span>🃏</span>Cards</button>
+    <button class="navb" data-hubtab="write"><span>✍️</span>Write</button>
+    <button class="navb" data-hubtab="me"><span>👤</span>Me</button>
+  </nav>`;
+}
+
+function hubTab(t){
+  const nh=document.querySelector('#navhost');
+  if(t==='me'){
+    BLAuth.showMe();
+    nh.querySelectorAll('.navb').forEach(b=>b.classList.toggle('on', b.dataset.hubtab==='me'));
+    return;
+  }
+  const last=localStorage.getItem('bl-last-app');
+  if(last!=='chinese' && last!=='spanish'){
+    /* no language chosen yet — nudge the user toward the two cards */
+    document.querySelectorAll('.hubcard').forEach(c=>{
+      c.classList.remove('pickme'); void c.offsetWidth; c.classList.add('pickme');
+    });
+    return;
+  }
+  pendingTab = (last==='chinese' && t==='cards') ? 'read' : t;   /* ZH calls it "Read" */
+  location.hash = last==='chinese' ? '#/chinese' : '#/spanish';
+}
+
 function renderHub(){
-  document.querySelector('#navhost').innerHTML='';
+  const nh=document.querySelector('#navhost');
+  nh.innerHTML=hubNavHTML();
+  nh.querySelectorAll('[data-hubtab]').forEach(b=>b.onclick=()=>hubTab(b.dataset.hubtab));
   document.querySelector('#app').innerHTML=`
   <div class="hubwrap">
     <div class="hubbrand">
@@ -1951,11 +1989,19 @@ function renderHub(){
 }
 function route(){
   const h=location.hash;
-  if(h.startsWith('#/chinese')) ZH.mount();
-  else if(h.startsWith('#/spanish')) ES.mount();
+  if(h.startsWith('#/chinese')){
+    localStorage.setItem('bl-last-app','chinese');
+    ZH.mount();
+    if(pendingTab){ const b=document.querySelector(`.navb[data-tab="${pendingTab}"]`); pendingTab=null; if(b) b.click(); }
+  }
+  else if(h.startsWith('#/spanish')){
+    localStorage.setItem('bl-last-app','spanish');
+    ES.mount();
+    if(pendingTab){ const b=document.querySelector(`.navb[data-tab="${pendingTab}"]`); pendingTab=null; if(b) b.click(); }
+  }
   else if(h.startsWith('#/me')){ renderHub(); BLAuth.showMe(); }
   else if(BLAuth.shouldGate()) BLAuth.showLanding();
-  else renderHub();
+  else { pendingTab=null; renderHub(); }
 }
 window.addEventListener('hashchange', route);
 route();
