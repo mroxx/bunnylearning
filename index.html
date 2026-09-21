@@ -1557,7 +1557,7 @@ function pickEsVoice(){
    the first module's re-pick when voices load asynchronously. */
 if('speechSynthesis' in window){
   pickEsVoice();
-  speechSynthesis.onvoiceschanged = () => { pickZhVoice(); pickEsVoice(); };
+  speechSynthesis.onvoiceschanged = () => { ZH.pickVoice(); pickEsVoice(); };
 }
 function speak(text, rate){
   if(!('speechSynthesis' in window)) return;
@@ -1758,7 +1758,7 @@ function renderQ(){
     <div class="prog"><i style="width:${(Q.i/Q.qs.length)*100}%"></i></div>
     <div class="qcard">
       <div class="qask">${q.ask}</div>
-      ${q.speak&&q.autoSpeak?`<button class="spk" id="spk">🔊 Listen again</button>`:''}
+      ${q.speak?`<button class="spk" id="spk">${q.autoSpeak?'🔊 Listen again':'🔊 Listen'}</button>`:''}
       <div class="opts ${q.opts.length===4?'two':''}">
         ${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.label}</button>`).join('')}
       </div>
