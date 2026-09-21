@@ -1,4 +1,4 @@
-const CACHE = 'bunny-learning-v9';
+const CACHE = 'bunny-learning-v10';
 const ASSETS = [
   './',
   './index.html',
