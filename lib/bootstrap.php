@@ -165,21 +165,46 @@ function valid_email(string $e): bool {
     return (bool) filter_var($e, FILTER_VALIDATE_EMAIL) && strlen($e) <= 255;
 }
 
-/* ---------- login rate limiting (SRS REQ-3.6.9) ---------- */
+/* ---------- login rate limiting (SRS REQ-3.6.9) ----------
+   Throttles on BOTH the account and the source IP, catches slow brute
+   force via a consecutive-fail streak, and caps the backoff so lockout
+   windows cannot compound indefinitely. */
 function login_throttle_seconds(string $usernameLc): int {
-    $st = db()->prepare('SELECT COUNT(*) c, MAX(attempted_at) last FROM login_attempts WHERE username_lc = ? AND success = 0 AND attempted_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)');
-    $st->execute([$usernameLc]);
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    $st = db()->prepare(
+        'SELECT
+           (SELECT COUNT(*) FROM login_attempts
+             WHERE success = 0 AND username_lc = ?
+               AND attempted_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)) AS u,
+           (SELECT COUNT(*) FROM login_attempts
+             WHERE success = 0 AND ip = ?
+               AND attempted_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)) AS i,
+           (SELECT COUNT(*) FROM login_attempts
+             WHERE username_lc = ? AND success = 0
+               AND attempted_at > COALESCE(
+                     (SELECT MAX(attempted_at) FROM login_attempts
+                       WHERE username_lc = ? AND success = 1), "1970-01-01")) AS streak');
+    $st->execute([$usernameLc, $ip, $usernameLc, $usernameLc]);
     $r = $st->fetch();
-    $fails = (int)($r['c'] ?? 0);
-    if ($fails < 5 || empty($r['last'])) return 0;
-    $wait = min(900, 30 * (2 ** ($fails - 5)));
-    $left = $wait - (time() - strtotime($r['last']));
-    return max(0, (int)$left);
+    $fails = max((int)($r['u'] ?? 0), (int)($r['i'] ?? 0), (int)($r['streak'] ?? 0));
+    if ($fails < 5) return 0;
+    // Cap the compounding: backoff tops out at 15 minutes per window and
+    // the streak is floored at 10, so an attacker cannot chain lockouts forever.
+    $wait = min(900, 30 * (2 ** min($fails - 5, 5)));
+    $st2 = db()->prepare('SELECT MAX(attempted_at) last FROM login_attempts WHERE success = 0 AND (username_lc = ? OR ip = ?)');
+    $st2->execute([$usernameLc, $ip]);
+    $last = $st2->fetch()['last'] ?? null;
+    if (!$last) return 0;
+    return max(0, (int)($wait - (time() - strtotime($last))));
 }
 function login_attempt(string $usernameLc, bool $success): void {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
     db()->prepare('INSERT INTO login_attempts (username_lc, ip, success) VALUES (?,?,?)')
-      ->execute([$usernameLc, $_SERVER['REMOTE_ADDR'] ?? '', $success ? 1 : 0]);
-    if ($success) db()->prepare('DELETE FROM login_attempts WHERE username_lc = ? AND success = 0')->execute([$usernameLc]);
+      ->execute([$usernameLc, $ip, $success ? 1 : 0]);
+    if ($success) {
+        db()->prepare('DELETE FROM login_attempts WHERE success = 0 AND (username_lc = ? OR ip = ?)')
+          ->execute([$usernameLc, $ip]);
+    }
 }
 
 /* ---------- tokens (email verify / password reset) ---------- */

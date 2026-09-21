@@ -3,3 +3,10 @@
 <FilesMatch "^(config\.php|config\.sample\.php|install\.lock|schema\.sql)$">
     Require all denied
 </FilesMatch>
+
+# No directory listings.
+Options -Indexes
+
+# Never serve VCS metadata (full source history lives in .git).
+RedirectMatch 404 /\.git
+RedirectMatch 404 /\.(svn|hg)(/|$)

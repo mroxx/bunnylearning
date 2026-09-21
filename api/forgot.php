@@ -13,6 +13,26 @@ csrf_check();
 $b = jbody();
 $lc = strtolower(trim((string)($b['username'] ?? '')));
 
+/* Rate limiting (SRS 3.7): at most 3 reset mails per 15 minutes per IP
+   and per username — stops inbox bombing and SMTP quota burn.
+   The table is created lazily so existing installs self-heal. */
+$ip = $_SERVER['REMOTE_ADDR'] ?? '';
+db()->exec('CREATE TABLE IF NOT EXISTS forgot_attempts (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  username_lc VARCHAR(20) NOT NULL,
+  ip VARCHAR(45) NOT NULL,
+  attempted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY ix_user_time (username_lc, attempted_at),
+  KEY ix_ip_time (ip, attempted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
+$st = db()->prepare('SELECT COUNT(*) c FROM forgot_attempts
+                     WHERE attempted_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND (username_lc = ? OR ip = ?)');
+$st->execute([$lc, $ip]);
+if ((int)$st->fetch()['c'] >= 3) {
+    jerr('Too many requests. Please try again later.', 429, 'throttled');
+}
+db()->prepare('INSERT INTO forgot_attempts (username_lc, ip) VALUES (?,?)')->execute([$lc, $ip]);
+
 $st = db()->prepare("SELECT * FROM users WHERE username_lc = ? AND deleted_at IS NULL
                      AND email IS NOT NULL AND email_verified_at IS NOT NULL");
 $st->execute([$lc]);

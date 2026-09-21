@@ -21,11 +21,18 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const url = new URL(e.request.url);
+  // Never intercept or cache API endpoints — they carry per-user auth state
+  // and their query strings matter (e.g. progress.php?app=bunny-zh).
+  if (url.origin === location.origin &&
+      (url.pathname.includes('/api/') || url.pathname.endsWith('/admin.php'))) {
+    return;
+  }
   e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then(hit => {
+    caches.match(e.request).then(hit => {
       return hit || fetch(e.request).then(res => {
         const copy = res.clone();
-        if (res.ok && new URL(e.request.url).origin === location.origin) {
+        if (res.ok && url.origin === location.origin) {
           caches.open(CACHE).then(c => c.put(e.request, copy));
         }
         return res;

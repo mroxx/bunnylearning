@@ -864,12 +864,12 @@ function addCoins(n){ S.coins+=n; persist(); renderCoins(); }
    Cantonese voices (zh-HK / yue) are deliberately excluded.)
    ============================================================ */
 let zhVoice = null;
-function pickVoice(){
+function pickZhVoice(){
   const vs = speechSynthesis.getVoices();
   const mandarin = vs.filter(v=>/^zh/i.test(v.lang) && !/zh[-_]HK/i.test(v.lang) && !/yue/i.test(v.lang));
   zhVoice = mandarin.find(v=>/zh[-_]TW/i.test(v.lang)) || mandarin[0] || null;
 }
-if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+if('speechSynthesis' in window){ pickZhVoice(); }
 function speak(text, rate){
   if(!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
@@ -1535,11 +1535,16 @@ function addCoins(n){ S.coins+=n; persist(); renderCoins(); }
    TEXT-TO-SPEECH — Spanish (es-ES first, then any es-*)
    ============================================================ */
 let esVoice = null;
-function pickVoice(){
+function pickEsVoice(){
   const vs = speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang));
   esVoice = vs.find(v=>/es[-_]ES/i.test(v.lang)) || vs[0] || null;
 }
-if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+/* One shared voiceschanged handler — assigning it twice would clobber
+   the first module's re-pick when voices load asynchronously. */
+if('speechSynthesis' in window){
+  pickEsVoice();
+  speechSynthesis.onvoiceschanged = () => { pickZhVoice(); pickEsVoice(); };
+}
 function speak(text, rate){
   if(!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
@@ -1748,7 +1753,8 @@ function renderQ(){
     </div>
   </div>`;
   $('#bk').onclick=()=>showSet(Q.si);
-  if(q.autoSpeak){ $('#spk').onclick=()=>speak(q.speak); setTimeout(()=>speak(q.speak),350); }
+  if(q.speak){ $('#spk').onclick=()=>speak(q.speak); }
+  if(q.autoSpeak){ setTimeout(()=>speak(q.speak),350); }
   app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.i));
   $('#next').onclick=()=>{ Q.i++; Q.i<Q.qs.length ? renderQ() : showResult(); };
 }
